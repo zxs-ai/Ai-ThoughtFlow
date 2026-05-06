@@ -1,22 +1,24 @@
 import React from "react";
 import { useAppStore } from "../../stores/appStore";
+import { useTranslation } from "../../i18n/I18nContext";
 
 export const StatusBar: React.FC = () => {
   const { modelConfig, isGenerating, elementCount, canvasTheme } = useAppStore();
+  const { t } = useTranslation();
 
   return (
     <div className="status-bar">
       <div className="status-left">
         <span className="status-item">
-          模型: {modelConfig.provider} / {modelConfig.modelName}
+          {t.statusBar.model}: {modelConfig.provider} / {modelConfig.modelName}
         </span>
         {isGenerating && (
-          <span className="status-item status-generating">● 生成中...</span>
+          <span className="status-item status-generating">● {t.statusBar.generating}</span>
         )}
       </div>
       <div className="status-right">
-        <span className="status-item">元素: {elementCount}</span>
-        <span className="status-item">主题: {canvasTheme === "dark" ? "暗色" : "亮色"}</span>
+        <span className="status-item">{t.statusBar.elements}: {elementCount}</span>
+        <span className="status-item">{t.statusBar.theme}: {canvasTheme === "dark" ? t.statusBar.dark : t.statusBar.light}</span>
       </div>
       <style>{`
         .status-bar {

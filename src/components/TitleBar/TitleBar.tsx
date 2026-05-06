@@ -1,8 +1,10 @@
 import React from "react";
 import { useAppStore } from "../../stores/appStore";
+import { useTranslation } from "../../i18n/I18nContext";
 
 export const TitleBar: React.FC = () => {
   const { setSettingsOpen, sidebarOpen, setSidebarOpen } = useAppStore();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -13,43 +15,48 @@ export const TitleBar: React.FC = () => {
         <button
           className="title-bar-toggle"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          title={sidebarOpen ? "折叠侧边栏 (Cmd+B)" : "展开侧边栏 (Cmd+B)"}
+          title={sidebarOpen ? t.titleBar.collapseSidebar : t.titleBar.expandSidebar}
         >
           {sidebarOpen ? "◀" : "▶"}
         </button>
         <span className="title-bar-name" data-tauri-drag-region>
-          ExcaliDraw AI
+          Ai ThoughtFlow
         </span>
       </div>
-      <div className="title-bar-actions" data-tauri-drag-region>
+      <div className="title-bar-center" data-tauri-drag-region />
+      <div className="title-bar-actions">
         <button
           className="title-bar-btn"
           onClick={() => setSettingsOpen(true)}
-          title="设置"
+          title={t.titleBar.settings}
         >
           ⚙️
         </button>
       </div>
       <style>{`
         .title-bar {
-          height: 40px;
+          height: 44px;
           display: flex;
           align-items: center;
           justify-content: space-between;
           padding: 0 16px;
-          background: rgba(10, 10, 15, 0.6);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          background: #18181f;
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
           user-select: none;
-          -webkit-app-region: drag;
           flex-shrink: 0;
+          position: relative;
+          z-index: 100;
+          border-radius: 12px 12px 0 0;
         }
         .title-bar-left {
           display: flex;
           align-items: center;
           gap: 12px;
-          -webkit-app-region: drag;
+          flex-shrink: 0;
+        }
+        .title-bar-center {
+          flex: 1;
+          height: 100%;
         }
         .title-bar-name {
           font-size: 14px;
@@ -70,7 +77,6 @@ export const TitleBar: React.FC = () => {
           font-size: 11px;
           cursor: pointer;
           transition: var(--transition-smooth);
-          -webkit-app-region: no-drag;
         }
         .title-bar-toggle:hover {
           background: rgba(255, 255, 255, 0.12);
@@ -79,7 +85,7 @@ export const TitleBar: React.FC = () => {
           display: flex;
           align-items: center;
           gap: 8px;
-          -webkit-app-region: drag;
+          flex-shrink: 0;
         }
         .title-bar-btn {
           width: 28px;
@@ -94,7 +100,6 @@ export const TitleBar: React.FC = () => {
           font-size: 15px;
           cursor: pointer;
           transition: var(--transition-smooth);
-          -webkit-app-region: no-drag;
         }
         .title-bar-btn:hover {
           background: rgba(255, 255, 255, 0.12);

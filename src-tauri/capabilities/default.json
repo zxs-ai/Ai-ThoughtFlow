@@ -5,13 +5,15 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "core:window:allow-start-dragging",
+    "core:window:allow-start-resize-dragging",
+    "core:window:allow-set-focus",
     "opener:default",
-    "fs:allow-read-dir",
     "fs:allow-read-file",
     "fs:allow-write-file",
     "fs:allow-mkdir",
-    "fs:allow-remove",
-    "fs:scope-appdata",
-    "fs:scope-appdata-recursive"
+    "fs:allow-exists",
+    "fs:scope-home",
+    "fs:scope-home-recursive"
   ]
 }

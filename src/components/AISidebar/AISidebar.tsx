@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from "react";
 import { useAppStore } from "../../stores/appStore";
+import { useTranslation } from "../../i18n/I18nContext";
 import { DiagramTypeSelector } from "./DiagramTypeSelector";
 import { ChatArea } from "./ChatArea";
 import { CodeEditor } from "./CodeEditor";
@@ -16,6 +17,7 @@ export const AISidebar: React.FC = () => {
     setImportMode,
     setMermaidCode,
   } = useAppStore();
+  const { t } = useTranslation();
 
   const isResizing = useRef(false);
 
@@ -60,7 +62,7 @@ export const AISidebar: React.FC = () => {
         <button
           className="sidebar-toggle-btn"
           onClick={() => setSidebarOpen(true)}
-          title="展开侧边栏"
+          title={t.sidebar.expandSidebar}
         >
           ▶
         </button>
@@ -68,7 +70,11 @@ export const AISidebar: React.FC = () => {
 
       {sidebarOpen && (
         <>
-          <div className="ai-sidebar-inner">
+          <div
+            className="ai-sidebar-inner"
+            onKeyDown={(e) => e.stopPropagation()}
+            onKeyUp={(e) => e.stopPropagation()}
+          >
             <DiagramTypeSelector />
             <ChatArea />
             <CodeEditor />
@@ -81,7 +87,7 @@ export const AISidebar: React.FC = () => {
                     checked={importMode === "replace"}
                     onChange={() => setImportMode("replace")}
                   />
-                  替换
+                  {t.sidebar.replace}
                 </label>
                 <label>
                   <input
@@ -90,7 +96,7 @@ export const AISidebar: React.FC = () => {
                     checked={importMode === "append"}
                     onChange={() => setImportMode("append")}
                   />
-                  追加
+                  {t.sidebar.append}
                 </label>
               </div>
               <button
@@ -102,7 +108,7 @@ export const AISidebar: React.FC = () => {
                   // useEffect won't fire. Let's work around this.
                   const code = mermaidCode.trim();
                   if (!code) {
-                    alert("请先输入 Mermaid 代码");
+                    alert(t.sidebar.enterCodeFirst);
                     return;
                   }
                   // Temporarily clear then set to trigger effect
@@ -110,7 +116,7 @@ export const AISidebar: React.FC = () => {
                   setTimeout(() => setMermaidCode(code), 10);
                 }}
               >
-                📥 导入生成
+                {t.sidebar.importGenerate}
               </button>
             </div>
           </div>

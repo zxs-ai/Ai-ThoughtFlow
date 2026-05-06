@@ -1,19 +1,21 @@
 import React from "react";
 import { useAppStore } from "../../stores/appStore";
+import { useTranslation } from "../../i18n/I18nContext";
 
 export const CodeEditor: React.FC = () => {
   const { mermaidCode, setMermaidCode } = useAppStore();
+  const { t } = useTranslation();
 
   return (
     <div className="code-editor">
       <div className="code-header">
-        <span className="code-title">Mermaid 代码</span>
+        <span className="code-title">{t.codeEditor.title}</span>
       </div>
       <textarea
         className="code-textarea"
         value={mermaidCode}
         onChange={(e) => setMermaidCode(e.target.value)}
-        placeholder="AI 生成的 Mermaid 代码将显示在这里，您也可以手动编辑..."
+        placeholder={t.codeEditor.placeholder}
         spellCheck={false}
       />
     </div>

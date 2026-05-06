@@ -1,11 +1,17 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig(async () => ({
   plugins: [react()],
+
+  // Excalidraw checks process.env.IS_PREACT internally
+  define: {
+    "process.env.IS_PREACT": JSON.stringify(""),
+  },
 
   clearScreen: false,
   server: {
@@ -24,18 +30,19 @@ export default defineConfig(async () => ({
     },
   },
 
-  // Prevent duplicate React instances (fixes Excalidraw "Cannot call a class as a function")
   resolve: {
     dedupe: ["react", "react-dom"],
+    alias: {
+      react: path.resolve("./node_modules/react"),
+      "react-dom": path.resolve("./node_modules/react-dom"),
+    },
   },
 
-  // Pre-bundle Excalidraw for compatibility
   optimizeDeps: {
     include: ["@excalidraw/excalidraw", "@excalidraw/mermaid-to-excalidraw"],
   },
 
   build: {
-    // Excalidraw uses dynamic imports internally, ensure they work
     rollupOptions: {
       output: {
         manualChunks: {

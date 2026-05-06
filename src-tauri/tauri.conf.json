@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "ExcaliDraw AI",
+  "productName": "Ai ThoughtFlow",
   "version": "1.0.0",
-  "identifier": "com.zz.excalidraw-ai",
+  "identifier": "com.zxsai.thoughtflow",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "ExcaliDraw AI",
+        "title": "Ai ThoughtFlow",
         "width": 1440,
         "height": 900,
         "minWidth": 1024,

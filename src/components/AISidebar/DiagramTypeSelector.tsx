@@ -1,24 +1,26 @@
 import React from "react";
 import { useAppStore, type DiagramType } from "../../stores/appStore";
-
-const types: { key: DiagramType; label: string; icon: string }[] = [
-  { key: "architecture", label: "🏗️ 架构图", icon: "🏗️" },
-  { key: "flowchart", label: "📊 流程图", icon: "📊" },
-  { key: "mindmap", label: "🗺️ 思维导图", icon: "🗺️" },
-  { key: "sequence", label: "🔄 时序图", icon: "🔄" },
-  { key: "er", label: "📋 ER 图", icon: "📋" },
-  { key: "usecase", label: "🎯 用例图", icon: "🎯" },
-  { key: "free", label: "📝 自由绘制", icon: "📝" },
-];
+import { useTranslation } from "../../i18n/I18nContext";
 
 export const DiagramTypeSelector: React.FC = () => {
   const { diagramType, setDiagramType } = useAppStore();
+  const { t } = useTranslation();
+
+  const types: { key: DiagramType; label: string; icon: string }[] = [
+    { key: "architecture", label: t.diagramTypes.architecture, icon: "🏗️" },
+    { key: "flowchart", label: t.diagramTypes.flowchart, icon: "📊" },
+    { key: "mindmap", label: t.diagramTypes.mindmap, icon: "🗺️" },
+    { key: "sequence", label: t.diagramTypes.sequence, icon: "🔄" },
+    { key: "er", label: t.diagramTypes.er, icon: "📋" },
+    { key: "usecase", label: t.diagramTypes.usecase, icon: "🎯" },
+    { key: "free", label: t.diagramTypes.free, icon: "📝" },
+  ];
 
   const handleChange = (type: DiagramType) => {
     if (type === diagramType) return;
     const hasMessages = useAppStore.getState().messages.length > 0;
     if (hasMessages) {
-      const ok = window.confirm("切换图表类型将清空当前对话，是否继续？");
+      const ok = window.confirm(t.sidebar.switchTypeConfirm);
       if (!ok) return;
     }
     setDiagramType(type);
@@ -26,7 +28,7 @@ export const DiagramTypeSelector: React.FC = () => {
 
   return (
     <div className="diagram-type-selector">
-      <label className="selector-label">图表类型</label>
+      <label className="selector-label">{t.sidebar.diagramType}</label>
       <select
         className="glass-select"
         value={diagramType}

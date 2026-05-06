@@ -41,7 +41,7 @@ html, body, #root {
 }
 
 body {
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 /* Scrollbar styling */
@@ -60,7 +60,12 @@ body {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* Ensure pointer events pass through where needed */
-.excalidraw-container {
-  pointer-events: auto !important;
+/* Hide Excalidraw help dialog social links */
+.excalidraw .HelpDialog__footer,
+.excalidraw [class*="help-dialog"] a[href*="x.com"],
+.excalidraw [class*="help-dialog"] a[href*="twitter"],
+.excalidraw [class*="help-dialog"] a[href*="discord"],
+.excalidraw .ExcHelpDialog__footer {
+  display: none !important;
 }
+

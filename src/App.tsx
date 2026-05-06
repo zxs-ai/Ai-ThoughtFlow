@@ -30,9 +30,15 @@ const App: React.FC = () => {
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
-        e.preventDefault();
-        setSidebarOpen(!sidebarOpen);
+      if (e.metaKey || e.ctrlKey) {
+        if (e.key === "b") {
+          e.preventDefault();
+          setSidebarOpen(!sidebarOpen);
+        } else if (e.key === ",") {
+          e.preventDefault();
+          const { settingsOpen, setSettingsOpen } = useAppStore.getState();
+          setSettingsOpen(!settingsOpen);
+        }
       }
     };
     window.addEventListener("keydown", handler);
@@ -57,6 +63,9 @@ const App: React.FC = () => {
           background: var(--bg-primary);
           border-radius: 12px;
           overflow: hidden;
+          /* Window border so edges are clearly defined */
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
         }
         .app-main {
           flex: 1;
