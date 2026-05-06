@@ -8,7 +8,7 @@ pub fn run() {
         .setup(|app| {
             #[cfg(target_os = "macos")]
             {
-                use cocoa::appkit::NSWindow;
+                use cocoa::appkit::{NSColor, NSWindow};
                 use cocoa::base::{id, nil, NO};
 
                 let window = app.get_webview_window("main").unwrap();
@@ -16,7 +16,8 @@ pub fn run() {
 
                 unsafe {
                     ns_window.setOpaque_(NO);
-                    ns_window.setBackgroundColor_(nil);
+                    // Use clearColor instead of nil — nil defaults to white on macOS
+                    ns_window.setBackgroundColor_(NSColor::clearColor(nil));
                     ns_window.setHasShadow_(true);
                 }
             }
