@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useCallback, useEffect, useMemo } from "react";
 import type { Lang, TranslationDict } from "./translations";
 import { translations } from "./translations";
 
@@ -41,11 +41,11 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const value: I18nContextValue = {
+  const value: I18nContextValue = useMemo(() => ({
     lang,
     setLang,
     t: translations[lang],
-  };
+  }), [lang, setLang]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };

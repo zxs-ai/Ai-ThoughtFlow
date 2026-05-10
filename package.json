@@ -7,12 +7,14 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "deploy": "bash scripts/deploy-desktop.sh"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.1",
     "@excalidraw/mermaid-to-excalidraw": "^2.2.2",
     "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
     "@tauri-apps/plugin-fs": "^2.5.1",
     "@tauri-apps/plugin-opener": "^2",
     "react": "^18.3.1",

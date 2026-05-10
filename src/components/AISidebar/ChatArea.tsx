@@ -1,9 +1,110 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { streamChat } from "../../services/llm";
 import { diagramPrompts } from "../../prompts/diagramPrompts";
 import { useTranslation } from "../../i18n/I18nContext";
+import {
+  loadHistory,
+  deleteSessionFromHistory,
+  appendSessionToHistory,
+  ConversationSession,
+} from "../../stores/appStore";
 
+/* ─────────────────────────── History Panel ─────────────────────────── */
+interface HistoryPanelProps {
+  onClose: () => void;
+  onRestore: (session: ConversationSession) => void;
+}
+
+const HistoryPanel: React.FC<HistoryPanelProps> = ({ onClose, onRestore }) => {
+  const { t } = useTranslation();
+  const [sessions, setSessions] = useState<ConversationSession[]>([]);
+
+  useEffect(() => {
+    setSessions(loadHistory());
+  }, []);
+
+  const handleDelete = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteSessionFromHistory(id);
+    setSessions((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const formatDate = (ts: number) => {
+    const d = new Date(ts);
+    return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="history-panel">
+      <div className="history-panel-header">
+        <span className="history-panel-title">{t.chat.historyTitle}</span>
+        <button className="history-close-btn" onClick={onClose} title={t.chat.closeHistory}>
+          ✕
+        </button>
+      </div>
+      <div className="history-list">
+        {sessions.length === 0 ? (
+          <div className="history-empty">{t.chat.historyEmpty}</div>
+        ) : (
+          sessions.map((s) => (
+            <div
+              key={s.id}
+              className="history-item"
+              onClick={() => { onRestore(s); onClose(); }}
+            >
+              <div className="history-item-title">{s.title || t.chat.untitled}</div>
+              <div className="history-item-meta">
+                <span className="history-item-date">{formatDate(s.createdAt)}</span>
+                <span className="history-item-count">{s.messages.length} {t.chat.messages}</span>
+              </div>
+              <button
+                className="history-item-delete"
+                onClick={(e) => handleDelete(s.id, e)}
+                title={t.chat.deleteSession}
+              >
+                🗑
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────── Clear Dialog ───────────────────────────── */
+interface ClearDialogProps {
+  onSaveAndClear: () => void;   // 保存到历史后清除前端
+  onDeleteAndClear: () => void; // 彻底删除，不保存
+  onCancel: () => void;
+}
+
+const ClearDialog: React.FC<ClearDialogProps> = ({ onSaveAndClear, onDeleteAndClear, onCancel }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="clear-dialog-overlay" onClick={onCancel}>
+      <div className="clear-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="clear-dialog-icon">🗑️</div>
+        <div className="clear-dialog-title">{t.chat.clearTitle}</div>
+        <div className="clear-dialog-desc">{t.chat.clearDesc}</div>
+        <div className="clear-dialog-actions">
+          <button className="clear-btn-save" onClick={onSaveAndClear}>
+            {t.chat.clearSave}
+          </button>
+          <button className="clear-btn-delete" onClick={onDeleteAndClear}>
+            {t.chat.clearDelete}
+          </button>
+          <button className="clear-btn-cancel" onClick={onCancel}>
+            {t.chat.clearCancel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────── Main ChatArea ──────────────────────────── */
 export const ChatArea: React.FC = () => {
   const {
     messages,
@@ -15,11 +116,14 @@ export const ChatArea: React.FC = () => {
     setMermaidCode,
     isGenerating,
     setSettingsOpen,
+    currentSessionId,
   } = useAppStore();
 
   const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [errorHint, setErrorHint] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -40,7 +144,7 @@ export const ChatArea: React.FC = () => {
     }
   }, [errorHint]);
 
-  const handleSend = async () => {
+  const handleSend = useCallback(async () => {
     const text = input.trim();
     if (!text || isGenerating) return;
     if (!modelConfig.apiKey) {
@@ -73,10 +177,9 @@ export const ChatArea: React.FC = () => {
         useAppStore.setState({ messages: updated });
       }
 
-      // Try to extract mermaid code from AI response — flexible matching
       const codeMatch =
-        assistantContent.match(/```mermaid\s*\n([\s\S]*?)```/) ||  // standard
-        assistantContent.match(/```\s*\n((?:graph|flowchart|sequenceDiagram|classDiagram|erDiagram|mindmap|gantt|pie|gitGraph)[\s\S]*?)```/); // untagged code block with mermaid content
+        assistantContent.match(/```mermaid\s*\n([\s\S]*?)```/) ||
+        assistantContent.match(/```\s*\n((?:graph|flowchart|sequenceDiagram|classDiagram|erDiagram|mindmap|gantt|pie|gitGraph)[\s\S]*?)```/);
       if (codeMatch) {
         setMermaidCode(codeMatch[1].trim());
       }
@@ -89,27 +192,103 @@ export const ChatArea: React.FC = () => {
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [input, isGenerating, modelConfig, diagramType, messages, addMessage, setIsGenerating, setMermaidCode, setSettingsOpen, t]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Ignore if IME is composing (e.g., Chinese input)
     if (e.nativeEvent.isComposing) return;
-    if (e.key === "Enter" && !e.shiftKey) {
+    // Option (Alt) + Enter = newline
+    if (e.key === "Enter" && e.altKey) {
+      e.preventDefault();
+      const ta = e.currentTarget;
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const newVal = input.slice(0, start) + "\n" + input.slice(end);
+      setInput(newVal);
+      // Restore cursor after state update
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          inputRef.current.selectionStart = start + 1;
+          inputRef.current.selectionEnd = start + 1;
+        }
+      });
+      return;
+    }
+    // Plain Enter = send
+    if (e.key === "Enter" && !e.shiftKey && !e.altKey) {
       e.preventDefault();
       e.stopPropagation();
       handleSend();
     }
   };
 
+  /* ── Clear handlers ── */
+  const handleClearRequest = () => {
+    if (messages.length === 0) return;
+    setShowClearDialog(true);
+  };
+
+  // 保存到历史，清除前端显示
+  const handleSaveAndClear = () => {
+    const firstUserMsg = messages.find((m) => m.role === "user")?.content ?? "对话";
+    const session: ConversationSession = {
+      id: currentSessionId,
+      title: firstUserMsg.slice(0, 40),
+      diagramType,
+      messages,
+      createdAt: Date.now(),
+    };
+    appendSessionToHistory(session);
+    clearMessages();
+    setShowClearDialog(false);
+  };
+
+  // 不保存，彻底清除
+  const handleDeleteAndClear = () => {
+    clearMessages();
+    setShowClearDialog(false);
+  };
+
+  /* ── Restore from history ── */
+  const handleRestore = (session: ConversationSession) => {
+    useAppStore.setState({
+      messages: session.messages,
+      diagramType: session.diagramType,
+      currentSessionId: session.id,
+    });
+  };
+
   return (
     <div className="chat-area">
+      {/* Header */}
       <div className="chat-header">
         <span className="chat-title">{t.chat.title}</span>
-        <button className="chat-clear" onClick={clearMessages} title={t.chat.clearChat}>
-          🗑️
-        </button>
+        <div className="chat-header-actions">
+          <button
+            className="chat-history-btn"
+            onClick={() => setShowHistory((v) => !v)}
+            title={t.chat.historyTitle}
+          >
+            🕐
+          </button>
+          <button
+            className="chat-clear"
+            onClick={handleClearRequest}
+            title={t.chat.clearChat}
+          >
+            🗑️
+          </button>
+        </div>
       </div>
 
+      {/* History overlay */}
+      {showHistory && (
+        <HistoryPanel
+          onClose={() => setShowHistory(false)}
+          onRestore={handleRestore}
+        />
+      )}
+
+      {/* Messages */}
       <div className="chat-messages">
         {messages.length === 0 && (
           <div className="chat-empty">{t.chat.emptyHint}</div>
@@ -127,32 +306,50 @@ export const ChatArea: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Input area */}
       <div className="chat-input-area">
         {errorHint && (
           <div className="chat-error-hint">{errorHint}</div>
         )}
-        <textarea
-          ref={inputRef}
-          className="chat-input glass-input"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={t.chat.placeholder}
-          rows={3}
-          disabled={isGenerating}
-          style={{ userSelect: "text" }}
-        />
-        <button
-          className="chat-send glass-button primary"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleSend();
-          }}
-          disabled={isGenerating || !input.trim()}
-        >
-          {isGenerating ? t.chat.generating : t.chat.send}
-        </button>
+        <div className="chat-input-wrapper">
+          <textarea
+            ref={inputRef}
+            className="chat-input glass-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={t.chat.placeholder}
+            rows={3}
+            disabled={isGenerating}
+            style={{ userSelect: "text" }}
+          />
+          <button
+            className={`chat-send-inline ${isGenerating ? "generating" : ""}`}
+            onClick={(e) => { e.stopPropagation(); handleSend(); }}
+            disabled={isGenerating || !input.trim()}
+            title={t.chat.send}
+          >
+            {isGenerating ? (
+              <span className="send-spinner" />
+            ) : (
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="5 12 12 5 19 12" />
+              </svg>
+            )}
+          </button>
+        </div>
+        <div className="chat-input-hint">{t.chat.inputHint}</div>
       </div>
+
+      {/* Clear confirmation dialog */}
+      {showClearDialog && (
+        <ClearDialog
+          onSaveAndClear={handleSaveAndClear}
+          onDeleteAndClear={handleDeleteAndClear}
+          onCancel={() => setShowClearDialog(false)}
+        />
+      )}
     </div>
   );
 };

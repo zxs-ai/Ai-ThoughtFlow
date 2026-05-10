@@ -24,10 +24,24 @@ export interface TranslationDict {
     emptyHint: string;
     noApiKey: string;
     placeholder: string;
+    inputHint: string;
     generating: string;
     send: string;
     error: string;
     requestFailed: string;
+    // History
+    historyTitle: string;
+    closeHistory: string;
+    historyEmpty: string;
+    untitled: string;
+    messages: string;
+    deleteSession: string;
+    // Clear dialog
+    clearTitle: string;
+    clearDesc: string;
+    clearSave: string;
+    clearDelete: string;
+    clearCancel: string;
   };
   // CodeEditor
   codeEditor: {
@@ -110,11 +124,23 @@ const zhCN: TranslationDict = {
     clearChat: "清空对话",
     emptyHint: "输入描述，AI 将生成图表代码",
     noApiKey: "请先在设置中配置 API Key ⚙️",
-    placeholder: "描述您想要的图表... (Enter 发送，Shift+Enter 换行)",
+    placeholder: "描述图表... (Enter 发送，Option+Enter 换行)",
+    inputHint: "Enter 发送 · Option+Enter 换行",
     generating: "生成中...",
     send: "发送",
     error: "错误",
     requestFailed: "请求失败",
+    historyTitle: "历史对话",
+    closeHistory: "关闭历史",
+    historyEmpty: "近 1 个月内暂无历史对话",
+    untitled: "无标题对话",
+    messages: "条消息",
+    deleteSession: "删除此对话",
+    clearTitle: "清空对话",
+    clearDesc: "是否将当前对话保存到历史记录？\n若选择不保存，当前对话将被彻底删除。",
+    clearSave: "✅ 保存到历史并清空",
+    clearDelete: "🗑️ 不保存，直接删除",
+    clearCancel: "取消",
   },
   codeEditor: {
     title: "Mermaid 代码",
@@ -193,11 +219,23 @@ const en: TranslationDict = {
     clearChat: "Clear Chat",
     emptyHint: "Describe what you want, AI will generate diagram code",
     noApiKey: "Please configure API Key in Settings first ⚙️",
-    placeholder: "Describe your diagram... (Enter to send, Shift+Enter for new line)",
+    placeholder: "Describe your diagram... (Enter to send, Option+Enter for newline)",
+    inputHint: "Enter to send · Option+Enter for newline",
     generating: "Generating...",
     send: "Send",
     error: "Error",
     requestFailed: "Request failed",
+    historyTitle: "History",
+    closeHistory: "Close History",
+    historyEmpty: "No conversations in the past month",
+    untitled: "Untitled",
+    messages: "messages",
+    deleteSession: "Delete this session",
+    clearTitle: "Clear Chat",
+    clearDesc: "Save this conversation to history before clearing?\nIf not saved, it will be permanently deleted.",
+    clearSave: "✅ Save to History & Clear",
+    clearDelete: "🗑️ Delete Without Saving",
+    clearCancel: "Cancel",
   },
   codeEditor: {
     title: "Mermaid Code",

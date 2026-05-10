@@ -60,12 +60,8 @@ body {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* Hide Excalidraw help dialog social links */
-.excalidraw .HelpDialog__footer,
-.excalidraw [class*="help-dialog"] a[href*="x.com"],
-.excalidraw [class*="help-dialog"] a[href*="twitter"],
-.excalidraw [class*="help-dialog"] a[href*="discord"],
-.excalidraw .ExcHelpDialog__footer {
+/* Hide Excalidraw help dialog external link buttons (Documentation/Blog/GitHub/YouTube) */
+[class*="HelpDialog__btn"] {
   display: none !important;
 }
 

@@ -10,8 +10,10 @@ export const AISidebar: React.FC = () => {
   const {
     sidebarOpen,
     sidebarWidth,
+    chatHeightFraction,
     setSidebarOpen,
     setSidebarWidth,
+    setChatHeightFraction,
     mermaidCode,
     importMode,
     setImportMode,
@@ -19,39 +21,73 @@ export const AISidebar: React.FC = () => {
   } = useAppStore();
   const { t } = useTranslation();
 
-  const isResizing = useRef(false);
+  /* ── Horizontal (sidebar width) resize ── */
+  const isResizingH = useRef(false);
 
-  const handleMouseDown = useCallback(() => {
-    isResizing.current = true;
+  const handleMouseDownH = useCallback(() => {
+    isResizingH.current = true;
     document.body.style.cursor = "col-resize";
     document.body.style.userSelect = "none";
   }, []);
 
-  const handleMouseMove = useCallback(
+  const handleMouseMoveH = useCallback(
     (e: MouseEvent) => {
-      if (!isResizing.current) return;
-      const newWidth = e.clientX;
-      setSidebarWidth(newWidth);
+      if (!isResizingH.current) return;
+      setSidebarWidth(e.clientX);
     },
     [setSidebarWidth]
   );
 
-  const handleMouseUp = useCallback(() => {
-    if (isResizing.current) {
-      isResizing.current = false;
+  const handleMouseUpH = useCallback(() => {
+    if (isResizingH.current) {
+      isResizingH.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+  }, []);
+
+  /* ── Vertical (chat vs code) resize ── */
+  const isResizingV = useRef(false);
+  const sidebarInnerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseDownV = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isResizingV.current = true;
+    document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
+  }, []);
+
+  const handleMouseMoveV = useCallback(
+    (e: MouseEvent) => {
+      if (!isResizingV.current || !sidebarInnerRef.current) return;
+      const rect = sidebarInnerRef.current.getBoundingClientRect();
+      // Fraction = distance from top / total inner height
+      const fraction = (e.clientY - rect.top) / rect.height;
+      setChatHeightFraction(fraction);
+    },
+    [setChatHeightFraction]
+  );
+
+  const handleMouseUpV = useCallback(() => {
+    if (isResizingV.current) {
+      isResizingV.current = false;
       document.body.style.cursor = "";
       document.body.style.userSelect = "";
     }
   }, []);
 
   React.useEffect(() => {
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMoveH);
+    document.addEventListener("mouseup", handleMouseUpH);
+    document.addEventListener("mousemove", handleMouseMoveV);
+    document.addEventListener("mouseup", handleMouseUpV);
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMoveH);
+      document.removeEventListener("mouseup", handleMouseUpH);
+      document.removeEventListener("mousemove", handleMouseMoveV);
+      document.removeEventListener("mouseup", handleMouseUpV);
     };
-  }, [handleMouseMove, handleMouseUp]);
+  }, [handleMouseMoveH, handleMouseUpH, handleMouseMoveV, handleMouseUpV]);
 
   return (
     <div
@@ -72,12 +108,32 @@ export const AISidebar: React.FC = () => {
         <>
           <div
             className="ai-sidebar-inner"
+            ref={sidebarInnerRef}
             onKeyDown={(e) => e.stopPropagation()}
             onKeyUp={(e) => e.stopPropagation()}
           >
+            {/* Top fixed: diagram type selector */}
             <DiagramTypeSelector />
-            <ChatArea />
-            <CodeEditor />
+
+            {/* AI Chat area — height controlled by fraction */}
+            <div
+              className="chat-section"
+              style={{ flex: `0 0 calc(${chatHeightFraction * 100}% - 40px)` }}
+            >
+              <ChatArea />
+            </div>
+
+            {/* Vertical drag handle */}
+            <div className="vertical-resize-handle" onMouseDown={handleMouseDownV}>
+              <span className="vertical-resize-dots" />
+            </div>
+
+            {/* Code editor — fills remaining space */}
+            <div className="code-section">
+              <CodeEditor />
+            </div>
+
+            {/* Import actions */}
             <div className="import-actions">
               <div className="import-mode">
                 <label>
@@ -102,16 +158,11 @@ export const AISidebar: React.FC = () => {
               <button
                 className="glass-button primary import-btn"
                 onClick={() => {
-                  // Trigger import by updating mermaidCode timestamp or using a separate trigger
-                  // We'll use a simple approach: force re-render by toggling a dummy state
-                  // Actually, the ExcalidrawCanvas watches mermaidCode - if code hasn't changed,
-                  // useEffect won't fire. Let's work around this.
                   const code = mermaidCode.trim();
                   if (!code) {
                     alert(t.sidebar.enterCodeFirst);
                     return;
                   }
-                  // Temporarily clear then set to trigger effect
                   setMermaidCode("");
                   setTimeout(() => setMermaidCode(code), 10);
                 }}
@@ -120,7 +171,7 @@ export const AISidebar: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="sidebar-resize-handle" onMouseDown={handleMouseDown} />
+          <div className="sidebar-resize-handle" onMouseDown={handleMouseDownH} />
         </>
       )}
     </div>

@@ -11,25 +11,12 @@ export const AboutSection: React.FC = () => {
         <h2>Ai ThoughtFlow v1.0.0</h2>
         <p>{t.settings.mitLicense}</p>
         <p>{t.settings.developer}: zxs-ai</p>
-        <div className="about-links">
-          <p>
-            GitHub:{" "}
-            <a
-              href="https://github.com/zxs-ai/Ai-ThoughtFlow"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "var(--accent)", textDecoration: "none" }}
-            >
-              github.com/zxs-ai/Ai-ThoughtFlow
-            </a>
-          </p>
-        </div>
         <div className="about-deps">
           <p>{t.settings.basedOn}</p>
           <ul>
-            <li>Excalidraw (MIT) - excalidraw.com</li>
-            <li>Tauri (MIT/Apache-2.0) - tauri.app</li>
-            <li>React (MIT) - react.dev</li>
+            <li>Excalidraw (MIT)</li>
+            <li>Tauri (MIT/Apache-2.0)</li>
+            <li>React (MIT)</li>
           </ul>
           <p style={{ fontSize: 11, opacity: 0.5, marginTop: 8 }}>
             {t.settings.originalProject}
