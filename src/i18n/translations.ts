@@ -47,6 +47,8 @@ export interface TranslationDict {
   codeEditor: {
     title: string;
     placeholder: string;
+    confirm: string;
+    cancel: string;
   };
   // Settings
   settings: {
@@ -145,6 +147,8 @@ const zhCN: TranslationDict = {
   codeEditor: {
     title: "Mermaid 代码",
     placeholder: "AI 生成的 Mermaid 代码将显示在这里，您也可以手动编辑...",
+    confirm: "确认",
+    cancel: "取消",
   },
   settings: {
     title: "设置",
@@ -240,6 +244,8 @@ const en: TranslationDict = {
   codeEditor: {
     title: "Mermaid Code",
     placeholder: "AI-generated Mermaid code will appear here, you can also edit manually...",
+    confirm: "Confirm",
+    cancel: "Cancel",
   },
   settings: {
     title: "Settings",

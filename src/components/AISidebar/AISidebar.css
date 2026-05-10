@@ -540,6 +540,61 @@
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Unsaved-changes indicator dot */
+.code-dirty-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f59e0b;
+  flex-shrink: 0;
+  animation: pulseDot 1.8s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Confirm / Cancel button group */
+.code-action-btns {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.code-action-btn {
+  padding: 2px 9px;
+  border-radius: 6px;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.code-action-confirm {
+  background: var(--accent);
+  color: white;
+}
+.code-action-confirm:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.code-action-cancel {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-secondary);
+}
+.code-action-cancel:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--text-primary);
 }
 
 .code-editor-body {
