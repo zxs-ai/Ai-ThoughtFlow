@@ -1,11 +1,10 @@
 /**
- * 圆圈图布局引擎
+ * 圆圈图布局引擎 v2
  *
- * 同心圆结构：中心小圆(核心概念) → 中圈(定义) → 外圈(示例/延伸)
+ * 参考图：两个同心圆，内圆实心橙色，外圈黄色，文字内/外区分
  */
 import type { DiagramData } from "../types";
-import { CENTER_COLORS } from "../colorPalettes";
-import { createEllipse, createLabeledEllipse, createText } from "../helpers/excalidrawFactory";
+import { createEllipse, createText } from "../helpers/excalidrawFactory";
 
 export function layoutCircle(data: DiagramData): any[] {
   const elements: any[] = [];
@@ -16,73 +15,89 @@ export function layoutCircle(data: DiagramData): any[] {
   const outerNodes = data.nodes.filter((n) => n.level === 2);
   const cx = 0, cy = 0;
 
-  // Outer ring (large circle, light fill)
-  const outerR = 250;
+  // 外圈（黄色实心大圆）
+  const outerR = 260;
   elements.push(
     createEllipse({
       x: cx - outerR, y: cy - outerR,
       width: outerR * 2, height: outerR * 2,
-      strokeColor: "#f39c12", fillColor: "#fffde7",
-      strokeWidth: 3,
+      strokeColor: "#F39C12",
+      fillColor: "#FFD93D",
+      strokeWidth: 5,
     })
   );
 
-  // Middle ring
-  const midR = 150;
+  // 中圈（白色，分隔区域）
+  const midR = 155;
   elements.push(
     createEllipse({
       x: cx - midR, y: cy - midR,
       width: midR * 2, height: midR * 2,
-      strokeColor: "#e91e63", fillColor: "#fce4ec",
-      strokeWidth: 3,
+      strokeColor: "#F39C12",
+      fillColor: "#ffffff",
+      strokeWidth: 4,
     })
   );
 
-  // Center circle with label
+  // 内核（橙色实心圆）
   const innerR = 70;
   elements.push(
-    ...createLabeledEllipse({
+    createEllipse({
       x: cx - innerR, y: cy - innerR,
       width: innerR * 2, height: innerR * 2,
-      label: root.label,
-      strokeColor: CENTER_COLORS.stroke, fillColor: CENTER_COLORS.fill,
-      fontSize: 24, strokeWidth: 4,
+      strokeColor: "#E74C3C",
+      fillColor: "#FF6B35",
+      strokeWidth: 4,
+    })
+  );
+  elements.push(
+    createText({
+      x: cx - innerR, y: cy - 13,
+      text: root.label,
+      fontSize: 18,
+      color: "#ffffff",
+      width: innerR * 2,
+      textAlign: "center",
     })
   );
 
-  // Place inner-level texts in the middle ring area
+  // 中间圆环文字（一级：定义/特征）
   if (innerNodes.length > 0) {
-    const innerAngleStep = (2 * Math.PI) / innerNodes.length;
+    const step = (2 * Math.PI) / innerNodes.length;
     innerNodes.forEach((node, i) => {
-      const angle = -Math.PI / 2 + i * innerAngleStep;
-      const tx = cx + Math.cos(angle) * (innerR + (midR - innerR) / 2);
-      const ty = cy + Math.sin(angle) * (innerR + (midR - innerR) / 2);
+      const angle = -Math.PI / 2 + i * step;
+      const r = (innerR + midR) / 2;
+      const tx = cx + Math.cos(angle) * r;
+      const ty = cy + Math.sin(angle) * r;
       elements.push(
         createText({
-          x: tx - 50, y: ty - 12,
+          x: tx - 55, y: ty - 12,
           text: node.label,
-          fontSize: 16,
-          color: "#c2185b",
-          width: 100,
+          fontSize: 15,
+          color: "#7B3F00",
+          width: 110,
+          textAlign: "center",
         })
       );
     });
   }
 
-  // Place outer-level texts in the outer ring area
+  // 外圈文字（二级：示例）
   if (outerNodes.length > 0) {
-    const outerAngleStep = (2 * Math.PI) / outerNodes.length;
+    const step = (2 * Math.PI) / outerNodes.length;
     outerNodes.forEach((node, i) => {
-      const angle = -Math.PI / 2 + i * outerAngleStep;
-      const tx = cx + Math.cos(angle) * (midR + (outerR - midR) / 2);
-      const ty = cy + Math.sin(angle) * (midR + (outerR - midR) / 2);
+      const angle = -Math.PI / 2 + (i + 0.5) * step;
+      const r = (midR + outerR) / 2;
+      const tx = cx + Math.cos(angle) * r;
+      const ty = cy + Math.sin(angle) * r;
       elements.push(
         createText({
-          x: tx - 50, y: ty - 12,
+          x: tx - 55, y: ty - 12,
           text: node.label,
           fontSize: 14,
-          color: "#e65100",
-          width: 100,
+          color: "#5D4037",
+          width: 110,
+          textAlign: "center",
         })
       );
     });

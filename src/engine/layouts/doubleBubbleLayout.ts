@@ -1,134 +1,145 @@
 /**
- * 双气泡图布局引擎
+ * 双气泡图布局引擎 v2
  *
- * 复刻参考图片风格：两个主题圆 + 中间共有属性 + 各自独有属性
+ * 参考图：两个粗描边大圆（蓝/棕），中间粉色小圆（共有），旁侧彩色小圆（独有）
  */
 import type { DiagramData } from "../types";
-import { getBranchColor, getNodeFill, SHARED_COLORS } from "../colorPalettes";
-import { createLabeledEllipse, createLine } from "../helpers/excalidrawFactory";
+import { getSolidBubbleColor } from "../colorPalettes";
+import { createEllipse, createLine, createText } from "../helpers/excalidrawFactory";
 
-const MAIN_R = 85;
-const SHARED_R = 50;
-const UNIQUE_R = 55;
-const MAIN_GAP = 320;         // 两主圆间距
-const SHARED_ORBIT = 140;     // 共有节点到中线距离
-const UNIQUE_ORBIT = 200;     // 独有节点到主圆距离
+const MAIN_R = 90;
+const SHARED_R = 48;
+const UNIQUE_R = 58;
+const MAIN_GAP = 350;
+const UNIQUE_ORBIT = 210;
 
 export function layoutDoubleBubble(data: DiagramData): any[] {
   const elements: any[] = [];
 
-  // Find the two main topics
   const mainNodes = data.nodes.filter((n) => n.level === 0);
   const leftMain = mainNodes[0];
   const rightMain = mainNodes[1] || mainNodes[0];
 
-  const leftX = -MAIN_GAP / 2, leftY = 0;
-  const rightX = MAIN_GAP / 2, rightY = 0;
-  const midX = 0, midY = 0;
+  const leftX = -MAIN_GAP / 2, rightX = MAIN_GAP / 2, cy = 0;
 
-  // Left main circle
+  // 左主圆（蓝色描边，白填充）
   elements.push(
-    ...createLabeledEllipse({
-      x: leftX - MAIN_R, y: leftY - MAIN_R,
+    createEllipse({
+      x: leftX - MAIN_R, y: cy - MAIN_R,
       width: MAIN_R * 2, height: MAIN_R * 2,
-      label: leftMain.label,
-      strokeColor: "#3f51b5", fillColor: "#e8eaf6",
-      fontSize: 22, strokeWidth: 4,
+      strokeColor: "#3F51B5", fillColor: "#ffffff", strokeWidth: 5,
+    })
+  );
+  elements.push(
+    createText({
+      x: leftX - MAIN_R, y: cy - 14,
+      text: leftMain?.label ?? "", fontSize: 20, color: "#3F51B5",
+      width: MAIN_R * 2, textAlign: "center",
     })
   );
 
-  // Right main circle
+  // 右主圆（棕色描边，白填充）
   elements.push(
-    ...createLabeledEllipse({
-      x: rightX - MAIN_R, y: rightY - MAIN_R,
+    createEllipse({
+      x: rightX - MAIN_R, y: cy - MAIN_R,
       width: MAIN_R * 2, height: MAIN_R * 2,
-      label: rightMain.label,
-      strokeColor: "#795548", fillColor: "#efebe9",
-      fontSize: 22, strokeWidth: 4,
+      strokeColor: "#795548", fillColor: "#ffffff", strokeWidth: 5,
+    })
+  );
+  elements.push(
+    createText({
+      x: rightX - MAIN_R, y: cy - 14,
+      text: rightMain?.label ?? "", fontSize: 20, color: "#795548",
+      width: MAIN_R * 2, textAlign: "center",
     })
   );
 
-  // Shared nodes (in the middle)
+  // 共有节点（粉色实心小圆，居中排列）
   const sharedNodes = data.nodes.filter((n) => n.side === "shared" || n.group === "shared");
-  if (sharedNodes.length > 0) {
-    const sharedAngleStep = Math.PI / Math.max(sharedNodes.length - 1, 1);
-    const sharedStartAngle = -Math.PI / 2;
+  const sharedTotalH = sharedNodes.length * (SHARED_R * 2 + 20) - 20;
+  const sharedStartY = cy - sharedTotalH / 2;
 
-    sharedNodes.forEach((node, i) => {
-      const angle = sharedNodes.length === 1
-        ? -Math.PI / 2
-        : sharedStartAngle + i * sharedAngleStep;
-      const sx = midX + Math.cos(angle) * SHARED_ORBIT * 0.4;
-      const sy = midY + Math.sin(angle) * SHARED_ORBIT - 30;
+  sharedNodes.forEach((node, i) => {
+    const sx = 0;
+    const sy = sharedStartY + i * (SHARED_R * 2 + 20) + SHARED_R;
 
-      // Lines to both main circles
-      elements.push(
-        createLine({ points: [[leftX, leftY], [sx, sy]], strokeColor: SHARED_COLORS.stroke, strokeWidth: 2 }),
-        createLine({ points: [[rightX, rightY], [sx, sy]], strokeColor: SHARED_COLORS.stroke, strokeWidth: 2 }),
-      );
+    elements.push(
+      createLine({ points: [[leftX + MAIN_R, cy], [sx - SHARED_R, sy]], strokeColor: "#E91E63", strokeWidth: 2 })
+    );
+    elements.push(
+      createLine({ points: [[rightX - MAIN_R, cy], [sx + SHARED_R, sy]], strokeColor: "#E91E63", strokeWidth: 2 })
+    );
+    elements.push(
+      createEllipse({
+        x: sx - SHARED_R, y: sy - SHARED_R,
+        width: SHARED_R * 2, height: SHARED_R * 2,
+        strokeColor: "#E91E63", fillColor: "#FF6B9D", strokeWidth: 3,
+      })
+    );
+    elements.push(
+      createText({
+        x: sx - SHARED_R, y: sy - 11,
+        text: node.label, fontSize: 14, color: "#ffffff",
+        width: SHARED_R * 2, textAlign: "center",
+      })
+    );
+  });
 
-      elements.push(
-        ...createLabeledEllipse({
-          x: sx - SHARED_R, y: sy - SHARED_R,
-          width: SHARED_R * 2, height: SHARED_R * 2,
-          label: node.label, strokeColor: SHARED_COLORS.stroke,
-          fillColor: SHARED_COLORS.fill, fontSize: 16, strokeWidth: 2,
-        })
-      );
-    });
-  }
+  // 左侧独有节点
+  const leftUniqueNodes = data.nodes.filter(
+    (n) => (n.side === "left" || n.parent === leftMain?.id) && n.level >= 1 && n.side !== "shared"
+  );
+  const lStep = Math.PI / Math.max(leftUniqueNodes.length + 1, 2);
+  leftUniqueNodes.forEach((node, i) => {
+    const angle = Math.PI / 2 + lStep * (i + 1);
+    const nx = leftX + Math.cos(angle) * UNIQUE_ORBIT;
+    const ny = cy + Math.sin(angle) * UNIQUE_ORBIT;
+    const color = getSolidBubbleColor(i);
 
-  // Left-unique nodes
-  const leftNodes = data.nodes.filter((n) => n.side === "left" || n.parent === leftMain?.id);
-  const leftUniqueNodes = leftNodes.filter((n) => n.level >= 1 && n.side !== "shared" && n.group !== "shared");
-  if (leftUniqueNodes.length > 0) {
-    const step = Math.PI / Math.max(leftUniqueNodes.length + 1, 2);
-    leftUniqueNodes.forEach((node, i) => {
-      const angle = Math.PI / 2 + step * (i + 1);
-      const nx = leftX + Math.cos(angle) * UNIQUE_ORBIT;
-      const ny = leftY + Math.sin(angle) * UNIQUE_ORBIT;
-      const color = getBranchColor(i);
-      const fill = getNodeFill(i);
+    elements.push(createLine({ points: [[leftX, cy], [nx, ny]], strokeColor: color, strokeWidth: 3 }));
+    elements.push(
+      createEllipse({
+        x: nx - UNIQUE_R, y: ny - UNIQUE_R,
+        width: UNIQUE_R * 2, height: UNIQUE_R * 2,
+        strokeColor: color, fillColor: color, strokeWidth: 3,
+      })
+    );
+    elements.push(
+      createText({
+        x: nx - UNIQUE_R, y: ny - 11,
+        text: node.label, fontSize: 14, color: "#ffffff",
+        width: UNIQUE_R * 2, textAlign: "center",
+      })
+    );
+  });
 
-      elements.push(
-        createLine({ points: [[leftX, leftY], [nx, ny]], strokeColor: color, strokeWidth: 2 })
-      );
-      elements.push(
-        ...createLabeledEllipse({
-          x: nx - UNIQUE_R, y: ny - UNIQUE_R,
-          width: UNIQUE_R * 2, height: UNIQUE_R * 2,
-          label: node.label, strokeColor: color, fillColor: fill,
-          fontSize: 16, strokeWidth: 2,
-        })
-      );
-    });
-  }
+  // 右侧独有节点
+  const rightUniqueNodes = data.nodes.filter(
+    (n) => (n.side === "right" || n.parent === rightMain?.id) && n.level >= 1 && n.side !== "shared"
+  );
+  const rStep = Math.PI / Math.max(rightUniqueNodes.length + 1, 2);
+  rightUniqueNodes.forEach((node, i) => {
+    const angle = -Math.PI / 2 + rStep * (i + 1);
+    const nx = rightX + Math.cos(angle) * UNIQUE_ORBIT;
+    const ny = cy + Math.sin(angle) * UNIQUE_ORBIT;
+    const color = getSolidBubbleColor(i + 5);
 
-  // Right-unique nodes
-  const rightNodes = data.nodes.filter((n) => n.side === "right" || n.parent === rightMain?.id);
-  const rightUniqueNodes = rightNodes.filter((n) => n.level >= 1 && n.side !== "shared" && n.group !== "shared");
-  if (rightUniqueNodes.length > 0) {
-    const step = Math.PI / Math.max(rightUniqueNodes.length + 1, 2);
-    rightUniqueNodes.forEach((node, i) => {
-      const angle = -Math.PI / 2 + step * (i + 1);
-      const nx = rightX + Math.cos(angle) * UNIQUE_ORBIT;
-      const ny = rightY + Math.sin(angle) * UNIQUE_ORBIT;
-      const color = getBranchColor(i + 5);
-      const fill = getNodeFill(i + 5);
-
-      elements.push(
-        createLine({ points: [[rightX, rightY], [nx, ny]], strokeColor: color, strokeWidth: 2 })
-      );
-      elements.push(
-        ...createLabeledEllipse({
-          x: nx - UNIQUE_R, y: ny - UNIQUE_R,
-          width: UNIQUE_R * 2, height: UNIQUE_R * 2,
-          label: node.label, strokeColor: color, fillColor: fill,
-          fontSize: 16, strokeWidth: 2,
-        })
-      );
-    });
-  }
+    elements.push(createLine({ points: [[rightX, cy], [nx, ny]], strokeColor: color, strokeWidth: 3 }));
+    elements.push(
+      createEllipse({
+        x: nx - UNIQUE_R, y: ny - UNIQUE_R,
+        width: UNIQUE_R * 2, height: UNIQUE_R * 2,
+        strokeColor: color, fillColor: color, strokeWidth: 3,
+      })
+    );
+    elements.push(
+      createText({
+        x: nx - UNIQUE_R, y: ny - 11,
+        text: node.label, fontSize: 14, color: "#ffffff",
+        width: UNIQUE_R * 2, textAlign: "center",
+      })
+    );
+  });
 
   return elements;
 }
