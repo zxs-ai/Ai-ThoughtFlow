@@ -46,9 +46,9 @@ Simply describe your ideas in natural language, and watch them instantly transfo
 ### 📥 Quick Start
 
 #### Download
-Get the latest installer from the [Releases](../../releases) page:
-- **macOS**: `.dmg` (Universal Intel/M-series)
-- **Windows**: `.exe`
+Latest installers for all platforms are available on the [Gitee Releases](https://gitee.com/applexyz/ai-thought-flow/releases) page:
+- **macOS**: `.dmg` (Universal Apple Silicon & Intel)
+- **Windows**: `.exe` (x64)
 
 #### Local Development
 ```bash
@@ -75,6 +75,8 @@ Ai ThoughtFlow is completely open-source and free. If it saves you time, conside
 
 #### Donation Methods
 
+> If you find Ai ThoughtFlow very helpful or valuable, please consider treating me to a coffee to support me, this will be my greatest source of innovation power!
+
 | Alipay (支付宝) | WeChat Pay (微信支付) |
 | :---: | :---: |
 | <img src="public/assets/alipay_qr.jpg" width="280" /> | <img src="public/assets/wechat_qr.jpg" width="280" /> |
@@ -89,9 +91,3 @@ This project is licensed under the [MIT License](LICENSE).
 
 *   Thanks to [Excalidraw](https://excalidraw.com) for the exceptional drawing capabilities.
 *   Thanks to all early adopters and users for their invaluable feedback.
-
----
-
-<p align="center">
-  <b>⭐ If you find it useful, please give it a Star!</b>
-</p>
