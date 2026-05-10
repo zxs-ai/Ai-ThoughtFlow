@@ -20,6 +20,9 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Add universal target
+        run: rustup target add x86_64-apple-darwin aarch64-apple-darwin
+
       - name: Install dependencies
         run: npm ci
 
@@ -29,13 +32,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: --target universal-apple-darwin
-          tagName: ${{ github.ref_name }}
+
+      - name: Rename artifacts for clarity
+        run: |
+          cd src-tauri/target/universal-apple-darwin/release/bundle
+          # Rename DMG
+          for f in dmg/*.dmg; do
+            mv "$f" "dmg/Ai-ThoughtFlow-${{ github.ref_name }}-macOS-Universal.dmg"
+          done
+          # Also zip the .app for users who prefer zip
+          cd macos
+          ditto -c -k --keepParent "Ai ThoughtFlow.app" "../Ai-ThoughtFlow-${{ github.ref_name }}-macOS-Universal.zip"
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
           name: macos-universal
-          path: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+          path: |
+            src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            src-tauri/target/universal-apple-darwin/release/bundle/*.zip
 
   # ── Windows x64 ─────────────────────────────────────────────────────
   build-windows:
@@ -60,7 +75,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: --target x86_64-pc-windows-msvc
-          tagName: ${{ github.ref_name }}
+
+      - name: Rename artifacts for clarity
+        shell: pwsh
+        run: |
+          $bundle = "src-tauri/target/x86_64-pc-windows-msvc/release/bundle"
+          # Rename NSIS installer
+          Get-ChildItem "$bundle/nsis/*.exe" | ForEach-Object {
+            Rename-Item $_.FullName "Ai-ThoughtFlow-${{ github.ref_name }}-Windows-x64-安装版.exe"
+          }
+          # Rename MSI installer
+          Get-ChildItem "$bundle/msi/*.msi" | ForEach-Object {
+            Rename-Item $_.FullName "Ai-ThoughtFlow-${{ github.ref_name }}-Windows-x64.msi"
+          }
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
@@ -86,11 +113,23 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          name: "Ai ThoughtFlow ${{ github.ref_name }}"
+          body: |
+            ## Ai ThoughtFlow ${{ github.ref_name }}
+
+            ### 📥 下载指南
+            | 文件 | 适用平台 | 说明 |
+            |------|----------|------|
+            | `...-macOS-Universal.dmg` | macOS (Intel + Apple Silicon) | 双击打开，拖入应用程序 |
+            | `...-macOS-Universal.zip` | macOS (Intel + Apple Silicon) | 解压后拖入应用程序 |
+            | `...-Windows-x64-安装版.exe` | Windows 10/11 (64位) | 双击安装，自动创建快捷方式 |
+            | `...-Windows-x64.msi` | Windows 10/11 (64位) | 静默安装包 |
+
+            > ⚠️ macOS 首次打开需在"系统设置 → 隐私与安全性"中允许运行
           files: |
-            artifacts/macos-universal/*.dmg
-            artifacts/windows-x64/*.exe
-            artifacts/windows-x64/*.msi
-          draft: true
-          generateReleaseNotes: true
+            artifacts/macos-universal/*
+            artifacts/windows-x64/*
+          draft: false
+          generateReleaseNotes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
