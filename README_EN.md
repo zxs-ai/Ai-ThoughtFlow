@@ -126,13 +126,14 @@ If Ai ThoughtFlow has helped you, please consider supporting its development! Yo
 
 - 🛠 Continue improving and fixing bugs
 - ✨ Develop more AI-powered features
-- 🔐 Purchase Apple Developer Certificate for signed versions (less security warnings)
+- 🚀 Improve AI generation speed and stability (higher-tier API access)
 - 📚 Improve documentation and guides
 
 ### Donation Methods
 
-- ☕ **Buy Me a Coffee**
-- 💰 **Local Payment** (Alipay/WeChat)
+| Alipay (支付宝) | WeChat Pay (微信支付) |
+| :---: | :---: |
+| ![Alipay](./public/assets/alipay_qr.jpg) | ![WeChat](./public/assets/wechat_qr.jpg) |
 
 ## 📜 License
 

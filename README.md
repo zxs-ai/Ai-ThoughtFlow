@@ -126,13 +126,14 @@ npm run tauri build -- --target x86_64-pc-windows-msvc
 
 - 🛠 持续改进和修复 Bug
 - ✨ 开发更多 AI 增强功能
-- 🔐 购买 Apple 开发者证书提供签名版本，减少安装时的安全警告
+- 🚀 提升 AI 生成速度与稳定性（购买更高级的模型 API）
 - 📚 完善文档和教程
 
 ### 捐赠方式
 
-- ☕ **Buy Me a Coffee**
-- 💰 **国内支付** (微信/支付宝)
+| 支付宝 (Alipay) | 微信支付 (WeChat Pay) |
+| :---: | :---: |
+| ![Alipay](./public/assets/alipay_qr.jpg) | ![WeChat](./public/assets/wechat_qr.jpg) |
 
 ## 📜 许可证
 
