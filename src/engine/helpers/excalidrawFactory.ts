@@ -23,6 +23,7 @@ const CARTOON_DEFAULTS = {
 function baseElement(overrides: Record<string, any>) {
   return {
     id: randomId(),
+    angle: 0,             // ← 必须，缺失会导致元素无法渲染
     fillStyle: "solid",
     strokeStyle: "solid",
     roughness: CARTOON_DEFAULTS.roughness,
@@ -201,8 +202,9 @@ export function createLine(opts: {
     type: "line",
     x,
     y,
-    width: Math.abs(normalizedPoints[normalizedPoints.length - 1][0]),
-    height: Math.abs(normalizedPoints[normalizedPoints.length - 1][1]),
+    // 确保 width/height 不为 0（水平线/垂直线会有一维为 0）
+    width: Math.max(Math.abs(normalizedPoints[normalizedPoints.length - 1][0]), 1),
+    height: Math.max(Math.abs(normalizedPoints[normalizedPoints.length - 1][1]), 1),
     points: normalizedPoints,
     strokeColor: opts.strokeColor,
     backgroundColor: "transparent",

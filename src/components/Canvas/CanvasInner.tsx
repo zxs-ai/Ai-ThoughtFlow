@@ -194,17 +194,25 @@ function CanvasInner() {
     if (!cartoonElements || cartoonElements.length === 0 || !excalidrawRef.current) return;
 
     const api = excalidrawRef.current;
+    const count = cartoonElements.length;
     setToast({ message: t.canvas.converting, type: "info" });
 
     try {
       if (importMode === "replace") {
-        api.updateScene({ elements: cartoonElements });
+        // 先清空再写入，避免旧元素污染
+        api.updateScene({ elements: [] });
+        // 微任务后再写入新元素，确保清空先完成
+        setTimeout(() => {
+          api.updateScene({ elements: cartoonElements });
+          // 再等一个渲染帧后滚动到内容区域
+          setTimeout(() => api.scrollToContent(), 80);
+        }, 20);
       } else {
         const current = api.getSceneElements();
         api.updateScene({ elements: [...current, ...cartoonElements] });
+        setTimeout(() => api.scrollToContent(), 80);
       }
-      api.scrollToContent();
-      setToast({ message: `🎨 ${t.canvas.generated} (${cartoonElements.length})`, type: "success" });
+      setToast({ message: `🎨 ${t.canvas.generated} (${count})`, type: "success" });
     } catch (err: any) {
       console.error("Cartoon render failed:", err);
       setToast({ message: `${t.canvas.importFailed}: ${err.message || t.canvas.unknownError}`, type: "error" });
@@ -213,6 +221,7 @@ function CanvasInner() {
     // Clear the signal so it doesn't re-trigger
     useAppStore.setState({ cartoonElements: null });
   }, [cartoonElements, importMode, t]);
+
 
   // Handle mermaid import (fallback pipeline)
   useEffect(() => {
