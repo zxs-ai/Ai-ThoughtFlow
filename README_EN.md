@@ -74,7 +74,7 @@ Download the latest `.exe` installer from the [Releases](../../releases) page.
 ### Quick Start
 ```bash
 # Clone
-git clone https://github.com/zxs-ai/Ai-ThoughtFlow.git
+git clone https://gitee.com/applexyz/ai-thought-flow.git
 cd Ai-ThoughtFlow
 
 # Install

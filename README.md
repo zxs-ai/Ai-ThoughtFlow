@@ -74,7 +74,7 @@ Ai ThoughtFlow 是一款**跨平台桌面端 AI 图表生成工具**。你只需
 ### 快速开始
 ```bash
 # 克隆仓库
-git clone https://github.com/zxs-ai/Ai-ThoughtFlow.git
+git clone https://gitee.com/applexyz/ai-thought-flow.git
 cd Ai-ThoughtFlow
 
 # 安装依赖

@@ -396,7 +396,7 @@ function CanvasInner() {
           onChange={onChange}
           initialData={{ libraryItems }}
           onLibraryChange={handleLibraryChange}
-          libraryReturnUrl="https://github.com/zxs-ai"
+          libraryReturnUrl="https://gitee.com/applexyz/ai-thought-flow"
           UIOptions={{
             canvasActions: {
               changeViewBackgroundColor: true,
@@ -440,7 +440,7 @@ function CanvasInner() {
             <MainMenu.DefaultItems.Help />
             <MainMenu.ItemLink
               icon={linkIcon}
-              href="https://github.com/zxs-ai"
+              href="https://gitee.com/applexyz/ai-thought-flow"
             >
               {lang === "zh-CN" ? "项目主页" : "Project Home"}
             </MainMenu.ItemLink>

@@ -20,7 +20,7 @@
 | 浏览器模式导出用 exportToBlob + download | 同上，替代内置 SaveAsImage | CanvasInner.tsx |
 | 隐藏画布工具栏的 saveToActiveFile/saveAsImage 按钮 | 已由自定义菜单项接管。Tauri 用原生对话框，浏览器用 download 触发，工具栏按钮会走内置逻辑造成不一致 | CanvasInner.tsx UIOptions |
 | 移除所有外部跳转链接（GitHub/依赖URL），保留项目主页链接 | 中国网络环境无法访问第三方外链，但用户自己的 GitHub 仓库需保留入口 | AboutSection.tsx, CanvasInner.tsx |
-| 仓库地址统一为 `https://github.com/zxs-ai` | 之前错误使用 gitee.com/zxsai，用户纠正。已写入 memory（reference_repo.md + feedback_repo_url.md） | CanvasInner.tsx, memory/ |
+| 仓库地址统一为 `https://gitee.com/applexyz/ai-thought-flow.git` | 之前错误使用 github.com/zxs-ai，用户纠正。已同步到 Gitee | CanvasInner.tsx, memory/ |
 | 帮助对话框 CSS 选择器修正 | 原选择器 `HelpDialog__footer` 不存在，改为 `[class*="HelpDialog__btn"]` 精准隐藏 4 个外链按钮 | globals.css |
 | 保存对话框默认路径设为 ~/Documents/ | 使用 `documentDir()` 拼接完整路径，对话框打开时路径一目了然 | CanvasInner.tsx |
 
@@ -58,9 +58,9 @@
 ### 累积未处理行动项
 - [ ] 提议创建 LU：Excalidraw onChange 高频回调防抖规则（来自 REFLECT-2026-05-06）
 - [ ] 提议创建 LU：仓库地址从 memory/git-remote 获取，禁止假设（来自 REFLECT-2026-05-07-2）
-- [ ] `libraryReturnUrl` 指向 `github.com/zxs-ai`，中国用户不可达。Excalidraw 图库浏览功能的回传 URL，需评估替换方案（来自 2026-05-07 自审）
+- [ ] `libraryReturnUrl` 指向 `gitee.com/applexyz/ai-thought-flow`，已完成同步（来自 2026-05-07 自审）
 
 ## 已知风险
 - 无当前活跃风险
-- Memory 已记录仓库地址 `https://github.com/zxs-ai`，后续操作以 memory 为准
+- Memory 已记录仓库地址 `https://gitee.com/applexyz/ai-thought-flow.git`，后续操作以 memory 为准
 

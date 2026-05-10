@@ -10,7 +10,7 @@ export const AboutSection: React.FC = () => {
       <div className="about-content">
         <h2>Ai ThoughtFlow v1.0.0</h2>
         <p>{t.settings.mitLicense}</p>
-        <p>{t.settings.developer}: zxs-ai</p>
+        <p>{t.settings.developer}: applexyz</p>
         <div className="about-deps">
           <p>{t.settings.basedOn}</p>
           <ul>
