@@ -3,6 +3,8 @@ import { useAppStore } from "../../stores/appStore";
 import { streamChat } from "../../services/llm";
 import { diagramPrompts } from "../../prompts/diagramPrompts";
 import { useTranslation } from "../../i18n/I18nContext";
+import { extractDiagramJSON, extractMermaidCode, renderCartoonDiagram } from "../../engine/cartoonRenderer";
+import { updateDiagramMemory, getDiagramMemory, buildContextPrompt, isModificationRequest, clearDiagramMemory } from "../../prompts/contextMemory";
 import {
   loadHistory,
   deleteSessionFromHistory,
@@ -158,7 +160,14 @@ export const ChatArea: React.FC = () => {
     addMessage({ role: "user", content: text });
     setIsGenerating(true);
 
-    const systemPrompt = diagramPrompts[diagramType];
+    // Build system prompt with context memory for incremental modifications
+    const basePrompt = diagramPrompts[diagramType];
+    const { currentDiagram } = getDiagramMemory();
+    const contextSuffix = isModificationRequest(text, !!currentDiagram)
+      ? buildContextPrompt()
+      : "";
+    const systemPrompt = basePrompt + contextSuffix;
+
     const chatMessages = [
       { role: "system" as const, content: systemPrompt },
       ...messages.map((m) => ({ role: m.role as "user" | "assistant", content: m.content })),
@@ -177,11 +186,23 @@ export const ChatArea: React.FC = () => {
         useAppStore.setState({ messages: updated });
       }
 
-      const codeMatch =
-        assistantContent.match(/```mermaid\s*\n([\s\S]*?)```/) ||
-        assistantContent.match(/```\s*\n((?:graph|flowchart|sequenceDiagram|classDiagram|erDiagram|mindmap|gantt|pie|gitGraph)[\s\S]*?)```/);
-      if (codeMatch) {
-        setMermaidCode(codeMatch[1].trim());
+      // === NEW PIPELINE: Try cartoon JSON first, then fallback to Mermaid ===
+      const diagramData = extractDiagramJSON(assistantContent);
+      if (diagramData) {
+        // Cartoon rendering pipeline
+        const elements = renderCartoonDiagram(diagramData);
+        if (elements.length > 0) {
+          // Store in context memory for future modifications
+          updateDiagramMemory(diagramData);
+          // Push elements to canvas via store
+          useAppStore.setState({ cartoonElements: elements });
+        }
+      } else {
+        // Fallback: extract Mermaid code
+        const mermaidCode = extractMermaidCode(assistantContent);
+        if (mermaidCode) {
+          setMermaidCode(mermaidCode);
+        }
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : t.chat.requestFailed;
@@ -239,12 +260,14 @@ export const ChatArea: React.FC = () => {
     };
     appendSessionToHistory(session);
     clearMessages();
+    clearDiagramMemory();
     setShowClearDialog(false);
   };
 
   // 不保存，彻底清除
   const handleDeleteAndClear = () => {
     clearMessages();
+    clearDiagramMemory();
     setShowClearDialog(false);
   };
 

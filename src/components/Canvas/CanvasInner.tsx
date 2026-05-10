@@ -174,6 +174,7 @@ function CanvasInner() {
     setElementCount,
     canvasTheme,
     setLibraryPanelOpen,
+    cartoonElements,
   } = useAppStore();
   const { t, lang } = useTranslation();
 
@@ -188,7 +189,32 @@ function CanvasInner() {
     setLibraryPanelOpen(true);
   }, [setLibraryPanelOpen]);
 
-  // Handle mermaid import
+  // Handle cartoon engine elements (new pipeline)
+  useEffect(() => {
+    if (!cartoonElements || cartoonElements.length === 0 || !excalidrawRef.current) return;
+
+    const api = excalidrawRef.current;
+    setToast({ message: t.canvas.converting, type: "info" });
+
+    try {
+      if (importMode === "replace") {
+        api.updateScene({ elements: cartoonElements });
+      } else {
+        const current = api.getSceneElements();
+        api.updateScene({ elements: [...current, ...cartoonElements] });
+      }
+      api.scrollToContent();
+      setToast({ message: `🎨 ${t.canvas.generated} (${cartoonElements.length})`, type: "success" });
+    } catch (err: any) {
+      console.error("Cartoon render failed:", err);
+      setToast({ message: `${t.canvas.importFailed}: ${err.message || t.canvas.unknownError}`, type: "error" });
+    }
+
+    // Clear the signal so it doesn't re-trigger
+    useAppStore.setState({ cartoonElements: null });
+  }, [cartoonElements, importMode, t]);
+
+  // Handle mermaid import (fallback pipeline)
   useEffect(() => {
     if (!mermaidCode || !excalidrawRef.current) return;
 
@@ -413,7 +439,7 @@ function CanvasInner() {
           onChange={onChange}
           initialData={{ libraryItems }}
           onLibraryChange={handleLibraryChange}
-          libraryReturnUrl="https://gitee.com/applexyz/ai-thought-flow"
+          libraryReturnUrl="https://gitee.com/applexyz/ai-thought-flow-pro"
           UIOptions={{
             canvasActions: {
               changeViewBackgroundColor: true,
@@ -457,7 +483,7 @@ function CanvasInner() {
             <MainMenu.DefaultItems.Help />
             <MainMenu.ItemLink
               icon={linkIcon}
-              href="https://gitee.com/applexyz/ai-thought-flow"
+              href="https://gitee.com/applexyz/ai-thought-flow-pro"
             >
               {lang === "zh-CN" ? "项目主页" : "Project Home"}
             </MainMenu.ItemLink>

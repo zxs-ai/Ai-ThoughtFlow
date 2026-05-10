@@ -82,6 +82,8 @@ export interface AppState {
   canvasTheme: "dark" | "light";
   currentSessionId: string;
   libraryPanelOpen: boolean;
+  /** Cartoon engine rendered elements (new pipeline) */
+  cartoonElements: any[] | null;
   setSidebarOpen: (open: boolean) => void;
   setSidebarWidth: (width: number) => void;
   setChatHeightFraction: (fraction: number) => void;
@@ -125,6 +127,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   canvasTheme: "dark",
   currentSessionId: newSessionId(),
   libraryPanelOpen: false,
+  cartoonElements: null,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   setSidebarWidth: (width) => set({ sidebarWidth: Math.min(Math.max(width, 240), 520) }),
   setChatHeightFraction: (fraction) =>
