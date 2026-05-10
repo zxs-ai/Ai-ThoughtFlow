@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ai-thoughtflow"
+name = "ai-thought-flow-pro"
 version = "1.0.0"
 dependencies = [
  "cocoa",

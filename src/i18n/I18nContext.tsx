@@ -2,7 +2,7 @@ import React, { createContext, useContext, useCallback, useEffect, useMemo } fro
 import type { Lang, TranslationDict } from "./translations";
 import { translations } from "./translations";
 
-const STORAGE_KEY = "ai-thoughtflow-lang";
+const STORAGE_KEY = "ai-thought-flow-pro-lang";
 
 function detectLang(): Lang {
   try {

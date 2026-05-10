@@ -1,7 +1,7 @@
 [package]
-name = "ai-thoughtflow"
+name = "ai-thought-flow-pro"
 version = "1.0.0"
-description = "Ai ThoughtFlow - AI-powered diagram tool"
+description = "Ai ThoughtFlow Pro - AI-powered diagram tool"
 authors = ["zxs-ai"]
 edition = "2021"
 

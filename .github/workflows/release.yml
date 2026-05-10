@@ -38,11 +38,11 @@ jobs:
           cd src-tauri/target/universal-apple-darwin/release/bundle
           # Rename DMG
           for f in dmg/*.dmg; do
-            mv "$f" "dmg/Ai-ThoughtFlow-${{ github.ref_name }}-macOS-Universal.dmg"
+            mv "$f" "dmg/Ai-ThoughtFlow-Pro-${{ github.ref_name }}-macOS-Universal.dmg"
           done
           # Also zip the .app for users who prefer zip
           cd macos
-          ditto -c -k --keepParent "Ai ThoughtFlow.app" "../Ai-ThoughtFlow-${{ github.ref_name }}-macOS-Universal.zip"
+          ditto -c -k --keepParent "Ai ThoughtFlow Pro.app" "../Ai-ThoughtFlow-Pro-${{ github.ref_name }}-macOS-Universal.zip"
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
@@ -82,11 +82,11 @@ jobs:
           $bundle = "src-tauri/target/x86_64-pc-windows-msvc/release/bundle"
           # Rename NSIS installer
           Get-ChildItem "$bundle/nsis/*.exe" | ForEach-Object {
-            Rename-Item $_.FullName "Ai-ThoughtFlow-${{ github.ref_name }}-Windows-x64-安装版.exe"
+            Rename-Item $_.FullName "Ai-ThoughtFlow-Pro-${{ github.ref_name }}-Windows-x64-安装版.exe"
           }
           # Rename MSI installer
           Get-ChildItem "$bundle/msi/*.msi" | ForEach-Object {
-            Rename-Item $_.FullName "Ai-ThoughtFlow-${{ github.ref_name }}-Windows-x64.msi"
+            Rename-Item $_.FullName "Ai-ThoughtFlow-Pro-${{ github.ref_name }}-Windows-x64.msi"
           }
 
       - name: Upload Windows artifacts
@@ -113,9 +113,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Ai ThoughtFlow ${{ github.ref_name }}"
+          name: "Ai ThoughtFlow Pro ${{ github.ref_name }}"
           body: |
-            ## Ai ThoughtFlow ${{ github.ref_name }}
+            ## Ai ThoughtFlow Pro ${{ github.ref_name }}
 
             ### 📥 下载指南
             | 文件 | 适用平台 | 说明 |

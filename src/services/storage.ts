@@ -1,7 +1,7 @@
 import type { ModelConfig } from "../stores/appStore";
 
-const CONFIG_KEY = "ai-thoughtflow-config";
-const AUTOSAVE_KEY = "ai-thoughtflow-autosave";
+const CONFIG_KEY = "ai-thought-flow-pro-config";
+const AUTOSAVE_KEY = "ai-thought-flow-pro-autosave";
 
 // Detect if running inside Tauri
 function isTauri(): boolean {
@@ -21,7 +21,7 @@ async function tauriReadFile(filePath: string): Promise<string | null> {
 
 async function tauriWriteFile(filePath: string, content: string): Promise<void> {
   const { writeTextFile, mkdir, exists, BaseDirectory } = await import("@tauri-apps/plugin-fs");
-  const dir = ".ai-thoughtflow";
+  const dir = ".ai-thought-flow-pro";
   const dirExists = await exists(dir, { baseDir: BaseDirectory.Home });
   if (!dirExists) {
     await mkdir(dir, { baseDir: BaseDirectory.Home, recursive: true });
@@ -34,7 +34,7 @@ async function tauriWriteFile(filePath: string, content: string): Promise<void> 
 export async function loadConfig(): Promise<ModelConfig | null> {
   try {
     if (isTauri()) {
-      const content = await tauriReadFile(".ai-thoughtflow/config.json");
+      const content = await tauriReadFile(".ai-thought-flow-pro/config.json");
       return content ? (JSON.parse(content) as ModelConfig) : null;
     }
     // Browser fallback: localStorage
@@ -49,7 +49,7 @@ export async function saveConfig(config: ModelConfig): Promise<void> {
   try {
     if (isTauri()) {
       await tauriWriteFile(
-        ".ai-thoughtflow/config.json",
+        ".ai-thought-flow-pro/config.json",
         JSON.stringify(config, null, 2)
       );
       return;
@@ -64,7 +64,7 @@ export async function saveConfig(config: ModelConfig): Promise<void> {
 export async function loadAutosave(): Promise<string | null> {
   try {
     if (isTauri()) {
-      return await tauriReadFile(".ai-thoughtflow/autosave.excalidraw");
+      return await tauriReadFile(".ai-thought-flow-pro/autosave.excalidraw");
     }
     return localStorage.getItem(AUTOSAVE_KEY);
   } catch {
@@ -75,7 +75,7 @@ export async function loadAutosave(): Promise<string | null> {
 export async function saveAutosave(data: string): Promise<void> {
   try {
     if (isTauri()) {
-      await tauriWriteFile(".ai-thoughtflow/autosave.excalidraw", data);
+      await tauriWriteFile(".ai-thought-flow-pro/autosave.excalidraw", data);
       return;
     }
     localStorage.setItem(AUTOSAVE_KEY, data);

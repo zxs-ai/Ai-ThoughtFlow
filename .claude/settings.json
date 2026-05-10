@@ -3,7 +3,7 @@
     "allow": [
       "Read(//Users/zz/ai-workflow-protocol/protocol/**)",
       "Bash(npx tsc *)",
-      "Bash(node -e \"const pkg = require\\('/Users/zz/ai-excalidraw/node_modules/@excalidraw/excalidraw/package.json'\\); console.log\\(JSON.stringify\\(pkg.exports, null, 2\\)\\)\")",
+      "Bash(node -e \"const pkg = require\\('/Users/zz/ai-excalidraw_pro/node_modules/@excalidraw/excalidraw/package.json'\\); console.log\\(JSON.stringify\\(pkg.exports, null, 2\\)\\)\")",
       "Bash(npm run *)"
     ]
   }

@@ -1,4 +1,4 @@
-# 认知缺口报告 — Ai ThoughtFlow
+# 认知缺口报告 — Ai ThoughtFlow Pro
 **生成时间**：2026-05-07
 **生成 Session**：2026-05-07
 

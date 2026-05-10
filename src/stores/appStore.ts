@@ -30,7 +30,7 @@ export interface ConversationSession {
   createdAt: number;      // timestamp ms
 }
 
-const HISTORY_KEY = "ai-excalidraw-history";
+const HISTORY_KEY = "ai-thought-flow-pro-history";
 const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
 export function loadHistory(): ConversationSession[] {

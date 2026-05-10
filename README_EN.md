@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/assets/logo.png" width="128" alt="Ai ThoughtFlow Logo" />
+  <img src="public/assets/logo.png" width="128" alt="Ai ThoughtFlow Pro Logo" />
 </p>
 
-<h1 align="center">Ai ThoughtFlow</h1>
+<h1 align="center">Ai ThoughtFlow Pro</h1>
 
 <p align="center">
   <b>Let Ideas Flow — AI-Powered Intelligent Diagram Generator with Liquid Glass Aesthetics</b>
@@ -17,9 +17,9 @@
 
 ---
 
-### 🌊 What is Ai ThoughtFlow?
+### 🌊 What is Ai ThoughtFlow Pro?
 
-Ai ThoughtFlow is a **cross-platform desktop AI diagram engine** designed for creativity and efficiency. It perfectly blends the hand-drawn aesthetics of Excalidraw with the logical power of modern LLMs, all wrapped in a premium "Liquid Glass" interface.
+Ai ThoughtFlow Pro is a **cross-platform desktop AI diagram engine** designed for creativity and efficiency. It perfectly blends the hand-drawn aesthetics of Excalidraw with the logical power of modern LLMs, all wrapped in a premium "Liquid Glass" interface.
 
 Simply describe your ideas in natural language, and watch them instantly transform into professional architecture diagrams, flowcharts, or mind maps.
 
@@ -46,14 +46,14 @@ Simply describe your ideas in natural language, and watch them instantly transfo
 ### 📥 Quick Start
 
 #### Download
-Latest installers for all platforms are available on the [Gitee Releases](https://gitee.com/applexyz/ai-thought-flow/releases) page:
+Latest installers for all platforms are available on the [Gitee Releases](https://gitee.com/applexyz/ai-thought-flow-pro/releases) page:
 - **macOS**: `.dmg` (Universal Apple Silicon & Intel)
 - **Windows**: `.exe` (x64)
 
 #### Local Development
 ```bash
 # 1. Clone the repository
-git clone https://github.com/applexyz/ai-thought-flow.git
+git clone https://github.com/applexyz/ai-thought-flow-pro.git
 
 # 2. Install dependencies
 npm install
@@ -66,7 +66,7 @@ npm run tauri dev
 
 ### 💖 Support the Project
 
-Ai ThoughtFlow is completely open-source and free. If it saves you time, consider supporting its continued evolution!
+Ai ThoughtFlow Pro is completely open-source and free. If it saves you time, consider supporting its continued evolution!
 
 #### Your support helps us:
 *   🛠 Maintain bug fixes and feature updates
@@ -75,7 +75,7 @@ Ai ThoughtFlow is completely open-source and free. If it saves you time, conside
 
 #### Donation Methods
 
-> If you find Ai ThoughtFlow very helpful or valuable, please consider treating me to a coffee to support me, this will be my greatest source of innovation power!
+> If you find Ai ThoughtFlow Pro very helpful or valuable, please consider treating me to a coffee to support me, this will be my greatest source of innovation power!
 
 | Alipay (支付宝) | WeChat Pay (微信支付) |
 | :---: | :---: |

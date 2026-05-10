@@ -1,7 +1,7 @@
 // Shared library item persistence
 import type { LibraryItems } from "@excalidraw/excalidraw/types";
 
-const LIBRARY_KEY = "ai-excalidraw-library-items";
+const LIBRARY_KEY = "ai-thought-flow-pro-library-items";
 
 export function loadLibraryItems(): LibraryItems {
   try {

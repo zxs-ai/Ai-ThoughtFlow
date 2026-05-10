@@ -8,7 +8,7 @@ export const AboutSection: React.FC = () => {
     <div className="settings-section">
       <h3>{t.settings.about}</h3>
       <div className="about-content">
-        <h2>Ai ThoughtFlow v1.0.0</h2>
+        <h2>Ai ThoughtFlow Pro v1.0.0</h2>
         <p>{t.settings.mitLicense}</p>
         <p>{t.settings.developer}: applexyz</p>
         <div className="about-deps">

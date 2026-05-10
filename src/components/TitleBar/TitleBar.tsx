@@ -20,7 +20,7 @@ export const TitleBar: React.FC = () => {
           {sidebarOpen ? "◀" : "▶"}
         </button>
         <span className="title-bar-name" data-tauri-drag-region>
-          Ai ThoughtFlow
+          Ai ThoughtFlow Pro
         </span>
       </div>
       <div className="title-bar-center" data-tauri-drag-region />
