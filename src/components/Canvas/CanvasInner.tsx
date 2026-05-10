@@ -123,9 +123,15 @@ async function tauriSaveAsImage(excalidrawAPI: any, format: "png" | "svg" = "png
   } else {
     const blob = await exportToBlob({
       elements,
-      appState,
+      appState: {
+        ...appState,
+        exportBackground: true,
+        exportWithDarkMode: false,
+      },
       files,
       mimeType: "image/png",
+      quality: 1,
+      scale: 3, // 3x 超清分辨率（约 216 dpi）
     });
     const arrayBuffer = await blob.arrayBuffer();
     await writeFile(filePath, new Uint8Array(arrayBuffer));
@@ -331,7 +337,18 @@ function CanvasInner() {
       const elements = excalidrawRef.current.getSceneElements();
       const appState = excalidrawRef.current.getAppState();
       const files = excalidrawRef.current.getFiles();
-      const blob = await exportToBlob({ elements, appState, files, mimeType: "image/png" });
+      const blob = await exportToBlob({
+        elements,
+        appState: {
+          ...appState,
+          exportBackground: true,
+          exportWithDarkMode: false,
+        },
+        files,
+        mimeType: "image/png",
+        quality: 1,
+        scale: 3, // 3x 超清分辨率
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
