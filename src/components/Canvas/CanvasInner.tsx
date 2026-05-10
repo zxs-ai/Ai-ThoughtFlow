@@ -82,7 +82,7 @@ async function tauriSaveScene(excalidrawAPI: any): Promise<string | null> {
   const docDir = await documentDir();
   const filePath = await save({
     title: "保存 Excalidraw 文件",
-    defaultPath: `${docDir}untitled.excalidraw`,
+    defaultPath: `${docDir}/untitled.excalidraw`,
     filters: [{ name: "Excalidraw", extensions: ["excalidraw"] }],
   });
 
@@ -106,7 +106,7 @@ async function tauriSaveAsImage(excalidrawAPI: any, format: "png" | "svg" = "png
   const docDir = await documentDir();
   const filePath = await save({
     title: "导出为图片",
-    defaultPath: `${docDir}untitled.${ext}`,
+    defaultPath: `${docDir}/untitled.${ext}`,
     filters: [{ name: format.toUpperCase(), extensions: [ext] }],
   });
 
