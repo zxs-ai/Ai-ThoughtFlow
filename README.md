@@ -1,163 +1,97 @@
-# Ai ThoughtFlow
+<p align="center">
+  <img src="public/assets/logo.png" width="128" alt="Ai ThoughtFlow Logo" />
+</p>
 
-> 基于 AI 的智能图表生成工具 — 用自然语言描述，一键生成专业图表。
+<h1 align="center">Ai ThoughtFlow</h1>
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-macOS%20|%20Windows-lightgrey.svg)]()
-[![Tauri](https://img.shields.io/badge/Tauri-2.x-8B5CF6.svg)](https://tauri.app)
-[![React](https://img.shields.io/badge/React-18-61DAFB.svg)](https://react.dev)
+<p align="center">
+  <b>让灵感流转 — 基于 AI 的液态玻璃风格智能图表生成器</b>
+</p>
 
-[English](README_EN.md) | 简体中文
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-1.0.0-6366f1.svg?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/License-MIT-34d399.svg?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Platform-macOS%20|%20Windows-f43f5e.svg?style=flat-square" alt="Platform" />
+  <img src="https://img.shields.io/badge/Tauri-2.x-8b5cf6.svg?style=flat-square" alt="Tauri" />
+</p>
 
 ---
 
-## 什么是 Ai ThoughtFlow？
+### 🌊 什么是 Ai ThoughtFlow？
 
-Ai ThoughtFlow 是一款**跨平台桌面端 AI 图表生成工具**。你只需要用自然语言描述想法，AI 就能自动生成对应的架构图、流程图、思维导图、时序图等多种专业图表。无需手动拖拽，一切由 AI 驱动。
+Ai ThoughtFlow 是一款专为创意和效率设计的**跨平台桌面端 AI 绘图引擎**。它将 Excalidraw 的手绘美学与现代大语言模型的逻辑能力完美结合，通过“液态玻璃”设计语言提供极致的交互体验。
 
-## 核心功能
+你只需用自然语言描述你的想法，它便能瞬间将其转化为专业的架构图、流程图或思维导图。
 
-### 🤖 AI 智能生成
-- 支持**自然语言描述**，自动识别图表类型
-- 内置 **7 种图表类型**：架构图、流程图、思维导图、时序图、ER 图、用例图、自由绘制
-- AI 自动生成 **Mermaid 代码**，实时预览并导入画布
-- 支持**连续对话**，逐步迭代优化图表
+---
 
-### 🎨 强大画布
-- 基于 **Excalidraw** 的完整手绘风格画布
-- 图表导入后可**手动二次编辑**，无限调整
-- 支持**替换/追加**两种导入模式
-- 画布内容**自动保存**，不怕丢失
+### ✨ 核心特性
 
-### 🔌 多模型支持
-| 服务商 | 模型 | 特点 |
-|--------|------|------|
-| DeepSeek | deepseek-chat | 高性价比，中文能力强 |
-| 通义千问 | qwen-max | 阿里云，企业级 |
-| 智谱 GLM | glm-4 | 国产旗舰 |
-| OpenAI | gpt-4o | 全球顶尖 |
-| 月之暗面 | moonshot-v1-8k | Kimi，长文本 |
-| 自定义 | 任意兼容接口 | 完全自由 |
+| 🚀 AI 驱动生成 | 🎨 极致艺术画布 | 🔒 隐私首选 |
+| :--- | :--- | :--- |
+| **多模型支持**：DeepSeek, Claude, GPT, Kimi 等一键切换。 | **手绘美学**：基于 Excalidraw，让图表兼具专业与温度。 | **本地安全**：API Key 与数据仅存本地，不经过任何中转服务器。 |
+| **自然语言对谈**：像聊天一样修改图表，支持连续迭代。 | **自由编辑**：AI 生成后可手动微调每一个像素，无缝衔接。 | **无遥测**：不收集任何用户信息，纯净且独立。 |
 
-### 🌍 国际化
-- 支持**简体中文 / English** 双语切换
-- 默认中文界面，面向中国用户优化
-- 设置中一键切换语言
+---
 
-### 🔒 隐私安全
-- **API Key 仅存储在本地**，不上传任何服务器
-- 所有数据保存在本地文件系统
-- 无遥测、无追踪
+### 🛠️ 技术底座
 
-### 🎨 Liquid Glass 设计
-- macOS 风格的**液态玻璃拟态**界面
-- 暗色主题，护眼专业
-- 可拖拽调整侧边栏宽度
+*   **UI 框架**: React 18 + TypeScript (响应式液态玻璃 UI)
+*   **跨平台容器**: Tauri 2.0 (原生性能，极低内存占用)
+*   **绘图引擎**: Excalidraw (业界领先的手绘风画布)
+*   **编译后端**: Mermaid.js (强大的结构化图表渲染)
 
-## 安装
+---
 
-### macOS
-从 [Releases](../../releases) 页面下载最新的 `.dmg` 文件，拖入 Applications 即可。
+### 📥 快速开始
 
-> 支持 Intel 和 Apple Silicon (M系列) 芯片。
+#### 下载安装
+从 [Releases](../../releases) 页面获取最新的安装包：
+- **macOS**: `.dmg` (支持 Intel/M 系列)
+- **Windows**: `.exe`
 
-### Windows
-从 [Releases](../../releases) 页面下载最新的 `.exe` 安装程序。
-
-## 开发
-
-### 环境要求
-- Node.js 22+
-- Rust toolchain
-- pnpm / npm
-
-### 快速开始
+#### 本地开发
 ```bash
-# 克隆仓库
-git clone https://gitee.com/applexyz/ai-thought-flow.git
-cd Ai-ThoughtFlow
+# 1. 克隆项目
+git clone https://github.com/applexyz/ai-thought-flow.git
 
-# 安装依赖
+# 2. 安装依赖
 npm install
 
-# 启动开发模式
+# 3. 启动开发模式
 npm run tauri dev
 ```
 
-### 构建
-```bash
-# macOS
-npm run tauri build -- --target universal-apple-darwin
+---
 
-# Windows
-npm run tauri build -- --target x86_64-pc-windows-msvc
-```
+### 💖 支持项目
 
-## 技术架构
+Ai ThoughtFlow 完全开源且免费。如果它为你的工作节省了时间，欢迎支持它的持续进化！
 
-```
-┌─────────────────────────────────────────┐
-│              Ai ThoughtFlow              │
-├─────────────────────────────────────────┤
-│  React 18 + TypeScript (UI Layer)       │
-│  Zustand (State Management)              │
-│  Excalidraw (Canvas Engine)             │
-│  Mermaid (Diagram Compiler)              │
-├─────────────────────────────────────────┤
-│  Tauri 2.x (Desktop Bridge)             │
-│  Rust (Native Layer)                     │
-├─────────────────────────────────────────┤
-│  macOS Universal  |  Windows x64        │
-└─────────────────────────────────────────┘
-```
+#### 您的支持将用于：
+*   🛠 持续维护 Bug 修复与功能更新
+*   ✨ 接入更多高性能 AI 模型 API
+*   📚 完善详细的使用教程与开发者文档
 
-## 快捷键
-
-| 快捷键 | 功能 |
-|--------|------|
-| `Cmd/Ctrl + B` | 切换侧边栏 |
-| `Cmd/Ctrl + ,` | 打开设置 |
-| `Enter` | 发送消息 |
-| `Shift + Enter` | 消息换行 |
-
-## 💖 支持项目
-
-如果 Ai ThoughtFlow 对您有帮助，欢迎支持开源项目的发展！您的支持将帮助我们：
-
-- 🛠 持续改进和修复 Bug
-- ✨ 开发更多 AI 增强功能
-- 🚀 提升 AI 生成速度与稳定性（购买更高级的模型 API）
-- 📚 完善文档和教程
-
-### 捐赠方式
+#### 捐赠方式
 
 | 支付宝 (Alipay) | 微信支付 (WeChat Pay) |
 | :---: | :---: |
-| ![Alipay](./public/assets/alipay_qr.jpg) | ![WeChat](./public/assets/wechat_qr.jpg) |
+| <img src="public/assets/alipay_qr.jpg" width="280" /> | <img src="public/assets/wechat_qr.jpg" width="280" /> |
 
-## 📜 许可证
+---
 
-本项目采用 [MIT License](LICENSE) 许可证。
+### 📜 许可证
 
-核心依赖：
-- [Excalidraw](https://excalidraw.com) (MIT)
-- [Tauri](https://tauri.app) (MIT/Apache-2.0)
-- [React](https://react.dev) (MIT)
+本项目基于 [MIT License](LICENSE) 协议。
 
-## 🙏 致谢
+### 🙏 致谢
 
-- 受 [Excalidraw](https://excalidraw.com) 社区启发
-- 使用 Apple Liquid Glass 风格设计
-- 感谢所有提供反馈的测试用户
-
-## 📞 支持
-
-- **Bug 反馈**：[Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
-- **功能建议**：[Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
-- **项目主页**：[https://gitee.com/applexyz/ai-thought-flow](https://gitee.com/applexyz/ai-thought-flow)
+*   感谢 [Excalidraw](https://excalidraw.com) 提供的卓越绘图能力。
+*   感谢所有为本项目提供反馈的早期用户。
 
 ---
 
 <p align="center">
-  <b>⭐ 如果觉得有用，请给个 Star！</b>
+  <b>⭐ 如果觉得好用，请点击右上角给个 Star，这是对我最大的鼓励！</b>
 </p>

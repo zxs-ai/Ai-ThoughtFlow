@@ -1,163 +1,97 @@
-# Ai ThoughtFlow
+<p align="center">
+  <img src="public/assets/logo.png" width="128" alt="Ai ThoughtFlow Logo" />
+</p>
 
-> AI-powered diagram generation tool — describe your ideas in natural language and generate professional diagrams instantly.
+<h1 align="center">Ai ThoughtFlow</h1>
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-macOS%20|%20Windows-lightgrey.svg)]()
-[![Tauri](https://img.shields.io/badge/Tauri-2.x-8B5CF6.svg)](https://tauri.app)
-[![React](https://img.shields.io/badge/React-18-61DAFB.svg)](https://react.dev)
+<p align="center">
+  <b>Let Ideas Flow — AI-Powered Intelligent Diagram Generator with Liquid Glass Aesthetics</b>
+</p>
 
-English | [简体中文](README.md)
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-1.0.0-6366f1.svg?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/License-MIT-34d399.svg?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Platform-macOS%20|%20Windows-f43f5e.svg?style=flat-square" alt="Platform" />
+  <img src="https://img.shields.io/badge/Tauri-2.x-8b5cf6.svg?style=flat-square" alt="Tauri" />
+</p>
 
 ---
 
-## What is Ai ThoughtFlow?
+### 🌊 What is Ai ThoughtFlow?
 
-Ai ThoughtFlow is a **cross-platform desktop AI diagram generation tool**. Simply describe your ideas in natural language, and AI will automatically generate architecture diagrams, flowcharts, mind maps, sequence diagrams, and more. No manual drag-and-drop — everything is AI-powered.
+Ai ThoughtFlow is a **cross-platform desktop AI diagram engine** designed for creativity and efficiency. It perfectly blends the hand-drawn aesthetics of Excalidraw with the logical power of modern LLMs, all wrapped in a premium "Liquid Glass" interface.
 
-## Core Features
+Simply describe your ideas in natural language, and watch them instantly transform into professional architecture diagrams, flowcharts, or mind maps.
 
-### 🤖 AI-Powered Generation
-- **Natural language input** with automatic diagram type detection
-- **7 built-in diagram types**: Architecture, Flowchart, Mind Map, Sequence, ER, Use Case, Free Draw
-- AI generates **Mermaid code** with real-time preview and canvas import
-- **Continuous conversation** for iterative diagram refinement
+---
 
-### 🎨 Full-Featured Canvas
-- Complete **Excalidraw** hand-drawn style canvas
-- **Manual editing** after AI import for unlimited adjustments
-- **Replace/Append** dual import modes
-- **Auto-save** canvas content
+### ✨ Core Features
 
-### 🔌 Multi-Provider Support
-| Provider | Model | Notes |
-|----------|-------|-------|
-| DeepSeek | deepseek-chat | Cost-effective, strong Chinese |
-| Qwen | qwen-max | Alibaba Cloud, enterprise-grade |
-| GLM | glm-4 | Premium Chinese LLM |
-| OpenAI | gpt-4o | World-class performance |
-| Kimi | moonshot-v1-8k | Long context |
-| Custom | Any compatible API | Full flexibility |
+| 🚀 AI-Driven Generation | 🎨 Artistic Canvas | 🔒 Privacy First |
+| :--- | :--- | :--- |
+| **Multi-Model Support**: Switch between DeepSeek, Claude, GPT, Kimi, and more with one click. | **Hand-Drawn Aesthetics**: Built on Excalidraw for diagrams that are both professional and personal. | **Local Security**: API keys and data are stored locally only. No intermediary servers. |
+| **Natural Language Dialog**: Refine diagrams through conversation, iterating step-by-step. | **Pixel-Perfect Editing**: Manually tweak every element after AI generation for total control. | **No Telemetry**: No tracking, no data collection. Pure and independent. |
 
-### 🌍 Internationalization
-- **Simplified Chinese / English** bilingual support
-- Default Chinese interface, optimized for Chinese users
-- One-click language switch in Settings
+---
 
-### 🔒 Privacy & Security
-- **API keys stored locally only**, never uploaded
-- All data saved on local filesystem
-- No telemetry, no tracking
+### 🛠️ Architecture
 
-### 🎨 Liquid Glass Design
-- macOS-style **glassmorphism** interface
-- Dark theme, eye-friendly
-- Resizable sidebar
+*   **UI Framework**: React 18 + TypeScript (Responsive Liquid Glass UI)
+*   **Desktop Bridge**: Tauri 2.0 (Native performance, extremely low memory footprint)
+*   **Drawing Engine**: Excalidraw (Industry-leading hand-drawn style canvas)
+*   **Rendering Backend**: Mermaid.js (Powerful structured diagram compiler)
 
-## Installation
+---
 
-### macOS
-Download the latest `.dmg` from the [Releases](../../releases) page and drag to Applications.
+### 📥 Quick Start
 
-> Supports both Intel and Apple Silicon (M-series) chips.
+#### Download
+Get the latest installer from the [Releases](../../releases) page:
+- **macOS**: `.dmg` (Universal Intel/M-series)
+- **Windows**: `.exe`
 
-### Windows
-Download the latest `.exe` installer from the [Releases](../../releases) page.
-
-## Development
-
-### Prerequisites
-- Node.js 22+
-- Rust toolchain
-- pnpm / npm
-
-### Quick Start
+#### Local Development
 ```bash
-# Clone
-git clone https://gitee.com/applexyz/ai-thought-flow.git
-cd Ai-ThoughtFlow
+# 1. Clone the repository
+git clone https://github.com/applexyz/ai-thought-flow.git
 
-# Install
+# 2. Install dependencies
 npm install
 
-# Dev mode
+# 3. Start development mode
 npm run tauri dev
 ```
 
-### Build
-```bash
-# macOS
-npm run tauri build -- --target universal-apple-darwin
+---
 
-# Windows
-npm run tauri build -- --target x86_64-pc-windows-msvc
-```
+### 💖 Support the Project
 
-## Architecture
+Ai ThoughtFlow is completely open-source and free. If it saves you time, consider supporting its continued evolution!
 
-```
-┌─────────────────────────────────────────┐
-│              Ai ThoughtFlow              │
-├─────────────────────────────────────────┤
-│  React 18 + TypeScript (UI Layer)       │
-│  Zustand (State Management)              │
-│  Excalidraw (Canvas Engine)             │
-│  Mermaid (Diagram Compiler)              │
-├─────────────────────────────────────────┤
-│  Tauri 2.x (Desktop Bridge)             │
-│  Rust (Native Layer)                     │
-├─────────────────────────────────────────┤
-│  macOS Universal  |  Windows x64        │
-└─────────────────────────────────────────┘
-```
+#### Your support helps us:
+*   🛠 Maintain bug fixes and feature updates
+*   ✨ Integrate more high-performance AI model APIs
+*   📚 Improve documentation and tutorials
 
-## Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Cmd/Ctrl + B` | Toggle Sidebar |
-| `Cmd/Ctrl + ,` | Open Settings |
-| `Enter` | Send Message |
-| `Shift + Enter` | New Line |
-
-## 💖 Support the Project
-
-If Ai ThoughtFlow has helped you, please consider supporting its development! Your support helps us:
-
-- 🛠 Continue improving and fixing bugs
-- ✨ Develop more AI-powered features
-- 🚀 Improve AI generation speed and stability (higher-tier API access)
-- 📚 Improve documentation and guides
-
-### Donation Methods
+#### Donation Methods
 
 | Alipay (支付宝) | WeChat Pay (微信支付) |
 | :---: | :---: |
-| ![Alipay](./public/assets/alipay_qr.jpg) | ![WeChat](./public/assets/wechat_qr.jpg) |
+| <img src="public/assets/alipay_qr.jpg" width="280" /> | <img src="public/assets/wechat_qr.jpg" width="280" /> |
 
-## 📜 License
+---
+
+### 📜 License
 
 This project is licensed under the [MIT License](LICENSE).
 
-Core dependencies:
-- [Excalidraw](https://excalidraw.com) (MIT)
-- [Tauri](https://tauri.app) (MIT/Apache-2.0)
-- [React](https://react.dev) (MIT)
+### 🙏 Acknowledgments
 
-## 🙏 Acknowledgments
-
-- Inspired by the [Excalidraw](https://excalidraw.com) community
-- Designed with Apple Liquid Glass aesthetics
-- Thanks to all beta testers and users for their feedback
-
-## 📞 Support
-
-- **Bug Reports**: [Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
-- **Feature Requests**: [Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
-- **Project Home**: [https://gitee.com/applexyz/ai-thought-flow](https://gitee.com/applexyz/ai-thought-flow)
+*   Thanks to [Excalidraw](https://excalidraw.com) for the exceptional drawing capabilities.
+*   Thanks to all early adopters and users for their invaluable feedback.
 
 ---
 
 <p align="center">
-  <b>⭐ Star this project if you find it useful!</b>
+  <b>⭐ If you find it useful, please give it a Star!</b>
 </p>
