@@ -120,14 +120,40 @@ npm run tauri build -- --target x86_64-pc-windows-msvc
 | `Enter` | 发送消息 |
 | `Shift + Enter` | 消息换行 |
 
-## 开源协议
+## 💖 支持项目
 
-本项目基于 [MIT License](LICENSE) 开源。
+如果 Ai ThoughtFlow 对您有帮助，欢迎支持开源项目的发展！您的支持将帮助我们：
+
+- 🛠 持续改进和修复 Bug
+- ✨ 开发更多 AI 增强功能
+- 🔐 购买 Apple 开发者证书提供签名版本，减少安装时的安全警告
+- 📚 完善文档和教程
+
+### 捐赠方式
+
+- ☕ **Buy Me a Coffee**
+- 💰 **国内支付** (微信/支付宝)
+
+## 📜 许可证
+
+本项目采用 [MIT License](LICENSE) 许可证。
 
 核心依赖：
 - [Excalidraw](https://excalidraw.com) (MIT)
 - [Tauri](https://tauri.app) (MIT/Apache-2.0)
 - [React](https://react.dev) (MIT)
+
+## 🙏 致谢
+
+- 受 [Excalidraw](https://excalidraw.com) 社区启发
+- 使用 Apple Liquid Glass 风格设计
+- 感谢所有提供反馈的测试用户
+
+## 📞 支持
+
+- **Bug 反馈**：[Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
+- **功能建议**：[Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
+- **项目主页**：[https://gitee.com/applexyz/ai-thought-flow](https://gitee.com/applexyz/ai-thought-flow)
 
 ---
 

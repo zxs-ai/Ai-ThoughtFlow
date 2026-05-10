@@ -120,14 +120,40 @@ npm run tauri build -- --target x86_64-pc-windows-msvc
 | `Enter` | Send Message |
 | `Shift + Enter` | New Line |
 
-## License
+## 💖 Support the Project
 
-This project is open source under the [MIT License](LICENSE).
+If Ai ThoughtFlow has helped you, please consider supporting its development! Your support helps us:
+
+- 🛠 Continue improving and fixing bugs
+- ✨ Develop more AI-powered features
+- 🔐 Purchase Apple Developer Certificate for signed versions (less security warnings)
+- 📚 Improve documentation and guides
+
+### Donation Methods
+
+- ☕ **Buy Me a Coffee**
+- 💰 **Local Payment** (Alipay/WeChat)
+
+## 📜 License
+
+This project is licensed under the [MIT License](LICENSE).
 
 Core dependencies:
 - [Excalidraw](https://excalidraw.com) (MIT)
 - [Tauri](https://tauri.app) (MIT/Apache-2.0)
 - [React](https://react.dev) (MIT)
+
+## 🙏 Acknowledgments
+
+- Inspired by the [Excalidraw](https://excalidraw.com) community
+- Designed with Apple Liquid Glass aesthetics
+- Thanks to all beta testers and users for their feedback
+
+## 📞 Support
+
+- **Bug Reports**: [Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
+- **Feature Requests**: [Gitee Issues](https://gitee.com/applexyz/ai-thought-flow/issues)
+- **Project Home**: [https://gitee.com/applexyz/ai-thought-flow](https://gitee.com/applexyz/ai-thought-flow)
 
 ---
 
