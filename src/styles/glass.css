@@ -61,10 +61,14 @@
 }
 
 .glass-select {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* ── 跨平台兼容：使用纯色深色背景，不用半透明
+     原因：Windows WebView2 渲染 <option> 时使用系统原生白底，
+     半透明背景在 Windows 暗色界面下会导致选项不可见。
+     macOS WebKit 会自动适配，但 Windows 不会。               ── */
+  background: #1e1e2e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  color: var(--text-primary);
+  color: #e2e8f0;
   font-family: var(--font-system);
   font-size: 13px;
   padding: 8px 12px;
@@ -72,9 +76,27 @@
   transition: var(--transition-smooth);
   width: 100%;
   cursor: pointer;
-  appearance: none;
+  /* color-scheme: dark 告知浏览器以暗色模式渲染原生控件 */
+  color-scheme: dark;
+}
+
+/* Windows/所有平台：强制 option 使用深色背景 */
+.glass-select option {
+  background: #1e1e2e;
+  color: #e2e8f0;
+}
+
+/* 禁用/占位 option 样式 */
+.glass-select option:disabled {
+  color: rgba(226, 232, 240, 0.4);
 }
 
 .glass-select:focus {
   border-color: var(--accent);
+  background: #252535;
+}
+
+.glass-select:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: #252535;
 }
