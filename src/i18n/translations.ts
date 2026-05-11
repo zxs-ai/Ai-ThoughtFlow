@@ -198,7 +198,7 @@ const zhCN: TranslationDict = {
     sequence: "🔄 时序图",
     er: "📋 ER 图",
     usecase: "🎯 用例图",
-    free: "📝 自由绘制",
+    free: "✨ 智能自动",
   },
 };
 
@@ -295,7 +295,7 @@ const en: TranslationDict = {
     sequence: "🔄 Sequence",
     er: "📋 ER Diagram",
     usecase: "🎯 Use Case",
-    free: "📝 Free Draw",
+    free: "✨ Auto (AI picks best)",
   },
 };
 

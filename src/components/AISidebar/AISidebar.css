@@ -92,15 +92,106 @@
   padding: 10px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .selector-label {
   display: block;
   font-size: 11px;
   color: var(--text-secondary);
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   font-weight: 500;
 }
+
+/* ── 智能自动按钮 ── */
+.auto-mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.auto-mode-btn:hover {
+  border-color: rgba(139, 92, 246, 0.6);
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.auto-mode-btn--active {
+  border-color: var(--accent);
+  background: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3),
+              0 0 16px rgba(139, 92, 246, 0.15);
+}
+
+.auto-mode-btn__icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  animation: sparkle 2.4s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15) rotate(10deg); }
+}
+
+.auto-mode-btn__text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.auto-mode-btn__badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  letter-spacing: 0.03em;
+}
+
+.auto-mode-btn__hint {
+  font-size: 10px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── 分隔线 ── */
+.type-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.25);
+  margin: 2px 0;
+}
+
+.type-divider::before,
+.type-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 当手动选了具体类型时，select 高亮 */
+.glass-select--active {
+  border-color: rgba(139, 92, 246, 0.5) !important;
+}
+
 
 /* ═══════════════════════════════════════════
    Chat Area

@@ -116,7 +116,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   sidebarOpen: true,
   sidebarWidth: 320,
   chatHeightFraction: 0.38,   // AI chat takes ~38% by default, code editor ~62%
-  diagramType: "architecture",
+  diagramType: "free",
   messages: [],
   mermaidCode: "",
   settingsOpen: false,
