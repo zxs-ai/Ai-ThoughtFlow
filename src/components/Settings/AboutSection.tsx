@@ -18,11 +18,16 @@ export const AboutSection: React.FC = () => {
             <li>Tauri (MIT/Apache-2.0)</li>
             <li>React (MIT)</li>
           </ul>
-          <p style={{ fontSize: 11, opacity: 0.5, marginTop: 8 }}>
-            {t.settings.originalProject}
-          </p>
         </div>
-        <p className="about-star">{t.settings.starHint}</p>
+        <a
+          className="about-star"
+          href="https://gitee.com/applexyz/ai-thought-flow"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: "block", cursor: "pointer", textDecoration: "none" }}
+        >
+          {t.settings.starHint}
+        </a>
       </div>
     </div>
   );
