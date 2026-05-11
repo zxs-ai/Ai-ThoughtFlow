@@ -1,4 +1,5 @@
 name: Release Build
+
 on:
   push:
     tags:
@@ -19,30 +20,38 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
-      - name: Add universal target
-        run: rustup target add x86_64-apple-darwin aarch64-apple-darwin
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build (Universal Binary)
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: --target universal-apple-darwin
+      - name: Build frontend
+        run: npm run build
 
-      - name: Rename artifacts for clarity
+      - name: Build Tauri (Universal macOS)
+        run: npx tauri build --target universal-apple-darwin
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ""
+
+      - name: Rename macOS artifacts
         run: |
-          cd src-tauri/target/universal-apple-darwin/release/bundle
+          VERSION="${{ github.ref_name }}"
+          BUNDLE="src-tauri/target/universal-apple-darwin/release/bundle"
           # Rename DMG
-          for f in dmg/*.dmg; do
-            mv "$f" "dmg/Ai-ThoughtFlow-Pro-${{ github.ref_name }}-macOS-Universal.dmg"
+          for f in "$BUNDLE"/dmg/*.dmg; do
+            [ -f "$f" ] && mv "$f" "$BUNDLE/dmg/Ai-ThoughtFlow-Pro-${VERSION}-macOS-Universal.dmg"
           done
-          # Also zip the .app for users who prefer zip
-          cd macos
-          ditto -c -k --keepParent "Ai ThoughtFlow Pro.app" "../Ai-ThoughtFlow-Pro-${{ github.ref_name }}-macOS-Universal.zip"
+          # Zip the .app
+          APP=$(find "$BUNDLE/macos" -name "*.app" | head -1)
+          if [ -n "$APP" ]; then
+            ditto -c -k --keepParent "$APP" "$BUNDLE/Ai-ThoughtFlow-Pro-${VERSION}-macOS-Universal.zip"
+          fi
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
@@ -51,6 +60,7 @@ jobs:
           path: |
             src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
             src-tauri/target/universal-apple-darwin/release/bundle/*.zip
+          if-no-files-found: warn
 
   # ── Windows x64 ─────────────────────────────────────────────────────
   build-windows:
@@ -65,28 +75,37 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
 
-      - name: Install dependencies
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build (Windows x64)
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: --target x86_64-pc-windows-msvc
+      - name: Build frontend
+        run: npm run build
 
-      - name: Rename artifacts for clarity
+      - name: Build Tauri (Windows x64)
+        run: npx tauri build --target x86_64-pc-windows-msvc
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ""
+
+      - name: Rename Windows artifacts
         shell: pwsh
         run: |
+          $version = "${{ github.ref_name }}"
           $bundle = "src-tauri/target/x86_64-pc-windows-msvc/release/bundle"
-          # Rename NSIS installer
-          Get-ChildItem "$bundle/nsis/*.exe" | ForEach-Object {
-            Rename-Item $_.FullName "Ai-ThoughtFlow-Pro-${{ github.ref_name }}-Windows-x64-安装版.exe"
+          # Rename NSIS installer (.exe)
+          Get-ChildItem "$bundle/nsis/*.exe" -ErrorAction SilentlyContinue | ForEach-Object {
+            Rename-Item $_.FullName "Ai-ThoughtFlow-Pro-${version}-Windows-x64-Setup.exe"
           }
           # Rename MSI installer
-          Get-ChildItem "$bundle/msi/*.msi" | ForEach-Object {
-            Rename-Item $_.FullName "Ai-ThoughtFlow-Pro-${{ github.ref_name }}-Windows-x64.msi"
+          Get-ChildItem "$bundle/msi/*.msi" -ErrorAction SilentlyContinue | ForEach-Object {
+            Rename-Item $_.FullName "Ai-ThoughtFlow-Pro-${version}-Windows-x64.msi"
           }
 
       - name: Upload Windows artifacts
@@ -96,19 +115,22 @@ jobs:
           path: |
             src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
             src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+          if-no-files-found: warn
 
   # ── Create GitHub Release ───────────────────────────────────────────
   release:
     needs: [build-macos, build-windows]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Display structure
-        run: ls -R artifacts
+      - name: List artifacts
+        run: find artifacts -type f | sort
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -117,19 +139,29 @@ jobs:
           body: |
             ## Ai ThoughtFlow Pro ${{ github.ref_name }}
 
-            ### 📥 下载指南
-            | 文件 | 适用平台 | 说明 |
-            |------|----------|------|
-            | `...-macOS-Universal.dmg` | macOS (Intel + Apple Silicon) | 双击打开，拖入应用程序 |
-            | `...-macOS-Universal.zip` | macOS (Intel + Apple Silicon) | 解压后拖入应用程序 |
-            | `...-Windows-x64-安装版.exe` | Windows 10/11 (64位) | 双击安装，自动创建快捷方式 |
-            | `...-Windows-x64.msi` | Windows 10/11 (64位) | 静默安装包 |
+            > 🎨 AI 智能图表生成工具 — 教育卡通风格，支持思维导图、流程图等 9 种图表类型
 
-            > ⚠️ macOS 首次打开需在"系统设置 → 隐私与安全性"中允许运行
+            ### 📥 下载安装
+
+            | 文件 | 平台 | 说明 |
+            |------|------|------|
+            | `...-macOS-Universal.dmg` | macOS (Intel + Apple Silicon) | 双击打开，拖入应用程序文件夹 |
+            | `...-macOS-Universal.zip` | macOS (Intel + Apple Silicon) | 解压后拖入应用程序文件夹 |
+            | `...-Windows-x64-Setup.exe` | Windows 10/11 (64位) | 双击安装，自动创建桌面快捷方式 |
+            | `...-Windows-x64.msi` | Windows 10/11 (64位) | 企业/静默部署包 |
+
+            > ⚠️ macOS 首次打开若提示"未知来源"，请在「系统设置 → 隐私与安全性」中点击「仍要打开」
+
+            ### ✨ 功能亮点
+            - AI 自然语言生成图表（智能自动选型）
+            - 支持上下文修改（二次对话调整已有图表）
+            - 9 种卡通教育风格图表类型
+            - 末端节点自动防重叠排版
           files: |
             artifacts/macos-universal/*
             artifacts/windows-x64/*
+          fail_on_unmatched_files: false
           draft: false
-          generateReleaseNotes: false
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
