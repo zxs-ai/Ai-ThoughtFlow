@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# AI workflow dev documents (private, do not publish)
+SESSION_BRIEF*.md
+PROJECT_CHARTER*.md
+docs/dev/
+logs/
+.gemini/
