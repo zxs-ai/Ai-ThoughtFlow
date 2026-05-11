@@ -65,24 +65,22 @@ export const TitleBar: React.FC = () => {
           ⚙️
         </button>
 
-        {/* ── Windows Window Controls ── */}
-        {platform !== "macos" && (
-          <div className="window-controls">
-            <button className="window-control-btn" onClick={handleMinimize} title="Minimize">
-              <svg width="12" height="12" viewBox="0 0 12 12"><rect fill="currentColor" x="1" y="5.5" width="10" height="1"/></svg>
-            </button>
-            <button className="window-control-btn" onClick={handleMaximize} title={isMaximized ? "Restore" : "Maximize"}>
-              {isMaximized ? (
-                <svg width="12" height="12" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" d="M3.5,3.5 L3.5,8.5 L8.5,8.5 L8.5,3.5 L3.5,3.5 Z M5.5,3.5 L5.5,1.5 L10.5,1.5 L10.5,6.5 L8.5,6.5" /></svg>
-              ) : (
-                <svg width="12" height="12" viewBox="0 0 12 12"><rect fill="none" stroke="currentColor" x="2.5" y="2.5" width="7" height="7"/></svg>
-              )}
-            </button>
-            <button className="window-control-btn close" onClick={handleClose} title="Close">
-              <svg width="12" height="12" viewBox="0 0 12 12"><path fill="currentColor" d="M10.5,2.1 L9.9,1.5 L6,5.4 L2.1,1.5 L1.5,2.1 L5.4,6 L1.5,9.9 L2.1,10.5 L6,6.6 L9.9,10.5 L10.5,9.9 L6.6,6 Z"/></svg>
-            </button>
-          </div>
-        )}
+        {/* ── 窗口控件：所有平台都需要（decorations: false 隐藏了原生按钮） ── */}
+        <div className="window-controls">
+          <button className="window-control-btn" onClick={handleMinimize} title="Minimize">
+            <svg width="12" height="12" viewBox="0 0 12 12"><rect fill="currentColor" x="1" y="5.5" width="10" height="1"/></svg>
+          </button>
+          <button className="window-control-btn" onClick={handleMaximize} title={isMaximized ? "Restore" : "Maximize"}>
+            {isMaximized ? (
+              <svg width="12" height="12" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" d="M3.5,3.5 L3.5,8.5 L8.5,8.5 L8.5,3.5 L3.5,3.5 Z M5.5,3.5 L5.5,1.5 L10.5,1.5 L10.5,6.5 L8.5,6.5" /></svg>
+            ) : (
+              <svg width="12" height="12" viewBox="0 0 12 12"><rect fill="none" stroke="currentColor" x="2.5" y="2.5" width="7" height="7"/></svg>
+            )}
+          </button>
+          <button className="window-control-btn close" onClick={handleClose} title="Close">
+            <svg width="12" height="12" viewBox="0 0 12 12"><path fill="currentColor" d="M10.5,2.1 L9.9,1.5 L6,5.4 L2.1,1.5 L1.5,2.1 L5.4,6 L1.5,9.9 L2.1,10.5 L6,6.6 L9.9,10.5 L10.5,9.9 L6.6,6 Z"/></svg>
+          </button>
+        </div>
       </div>
       <style>{`
         .title-bar {
