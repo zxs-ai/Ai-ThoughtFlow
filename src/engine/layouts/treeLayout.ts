@@ -48,12 +48,31 @@ export function layoutTree(data: DiagramData): any[] {
 
   if (branches.length === 0) return elements;
 
-  const totalWidth = Math.max(branches.length * 210, 420);
+  // ── 防重叠：先计算每个分支下叶子的最大宽度，确定列宽 ────────
+  const LEAF_GAP = 20;   // 叶子节点间最小间距
+  const BRANCH_GAP = 28; // 分支节点间最小间距
+
+  // 每个分支列需要的最小宽度 = 叶子数 × (LEAF_W + LEAF_GAP)
+  const columnWidths = branches.map((branch) => {
+    const leaves = childrenOf(data.nodes, branch.id);
+    if (leaves.length === 0) return BRANCH_W + BRANCH_GAP;
+    return Math.max(leaves.length * (LEAF_W + LEAF_GAP), BRANCH_W + BRANCH_GAP);
+  });
+
+  const totalWidth = Math.max(columnWidths.reduce((a, b) => a + b, 0), branches.length * (BRANCH_W + BRANCH_GAP));
   const startX = -totalWidth / 2;
   const branchY = rootY - 260;
 
+  // 每列的中心 X 坐标（按列宽累加）
+  let xCursor = startX;
+  const branchCenterXs = branches.map((_, i) => {
+    const cx = xCursor + columnWidths[i] / 2;
+    xCursor += columnWidths[i];
+    return cx;
+  });
+
   branches.forEach((branch, i) => {
-    const bx = startX + (i + 0.5) * (totalWidth / branches.length);
+    const bx = branchCenterXs[i];
     const by = branchY;
     const color = getBranchColor(i);
     const solid = getSolidBubbleColor(i);
@@ -82,16 +101,17 @@ export function layoutTree(data: DiagramData): any[] {
       })
     );
 
-    // 叶子节点
+    // 叶子节点（防重叠：每列等分对齐）
     const branchLeaves = childrenOf(data.nodes, branch.id);
     if (branchLeaves.length === 0) return;
 
-    const leafSpread = Math.max(branchLeaves.length * 148, 200);
-    const leafStartX = bx - leafSpread / 2;
-    const leafY = by - 180;
+    // 叶子展开宽度 = 叶子数 × (LEAF_W + LEAF_GAP)，保证不重叠
+    const leafSpread = Math.max(branchLeaves.length * (LEAF_W + LEAF_GAP), LEAF_W + LEAF_GAP);
+    const leafStartX = bx - leafSpread / 2 + LEAF_W / 2;
+    const leafY = by - 190;
 
     branchLeaves.forEach((leaf, j) => {
-      const lx = leafStartX + (j + 0.5) * (leafSpread / branchLeaves.length);
+      const lx = leafStartX + j * (leafSpread / Math.max(branchLeaves.length, 1));
       const ly = leafY;
 
       elements.push(
