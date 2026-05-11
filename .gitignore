@@ -26,6 +26,7 @@ dist-ssr
 # AI workflow dev documents (private, do not publish)
 SESSION_BRIEF*.md
 PROJECT_CHARTER*.md
+COGNITIVE_GAPS*.md
 docs/dev/
 logs/
 .gemini/
