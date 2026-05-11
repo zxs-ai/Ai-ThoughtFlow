@@ -52,29 +52,42 @@ export function renderCartoonDiagram(data: DiagramData): any[] {
  * 检测 AI 回复中是否包含结构化 JSON（而非 Mermaid 代码）
  */
 export function extractDiagramJSON(aiResponse: string): DiagramData | null {
-  // Try to find ```json block
-  const jsonMatch = aiResponse.match(/```json\s*\n([\s\S]*?)```/);
-  if (jsonMatch) {
+  // 1. Try to find all ```json blocks and pick the LAST one
+  const jsonBlocks = [...aiResponse.matchAll(/```json\s*\n([\s\S]*?)```/g)];
+  if (jsonBlocks.length > 0) {
+    const lastBlock = jsonBlocks[jsonBlocks.length - 1][1];
     try {
-      const parsed = JSON.parse(jsonMatch[1].trim());
-      if (parsed.type && parsed.nodes && Array.isArray(parsed.nodes)) {
-        return parsed as DiagramData;
-      }
+      const parsed = JSON.parse(lastBlock.trim());
+      if (parsed.type && parsed.nodes) return parsed as DiagramData;
     } catch {
-      // Not valid JSON
+      // Ignore invalid JSON in blocks
     }
   }
 
-  // Try to find raw JSON object
-  const rawMatch = aiResponse.match(/\{[\s\S]*"type"\s*:\s*"[^"]+?"[\s\S]*"nodes"\s*:[\s\S]*\}/);
-  if (rawMatch) {
+  // 2. Try to find the last occurrence of something that looks like our Diagram JSON
+  // We search for the last "type" and "nodes" pattern
+  const lastBrace = aiResponse.lastIndexOf("{");
+  const lastEndBrace = aiResponse.lastIndexOf("}");
+  
+  if (lastBrace !== -1 && lastEndBrace !== -1 && lastEndBrace > lastBrace) {
+    const candidate = aiResponse.substring(lastBrace, lastEndBrace + 1);
     try {
-      const parsed = JSON.parse(rawMatch[0]);
-      if (parsed.type && parsed.nodes && Array.isArray(parsed.nodes)) {
-        return parsed as DiagramData;
-      }
+      const parsed = JSON.parse(candidate);
+      if (parsed.type && parsed.nodes) return parsed as DiagramData;
     } catch {
-      // Not valid JSON
+      // Continue to full text scan
+    }
+  }
+
+  // 3. Fallback: non-greedy scan for any JSON object containing type and nodes
+  const rawBlocks = [...aiResponse.matchAll(/\{[\s\S]*?"type"\s*:\s*"[^"]+?"[\s\S]*?"nodes"\s*:[\s\S]*?\}/g)];
+  if (rawBlocks.length > 0) {
+    const lastRaw = rawBlocks[rawBlocks.length - 1][0];
+    try {
+      const parsed = JSON.parse(lastRaw);
+      if (parsed.type && parsed.nodes) return parsed as DiagramData;
+    } catch {
+      // Fail
     }
   }
 

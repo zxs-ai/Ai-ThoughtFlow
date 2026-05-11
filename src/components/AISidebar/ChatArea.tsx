@@ -168,9 +168,23 @@ export const ChatArea: React.FC = () => {
       : "";
     const systemPrompt = basePrompt + contextSuffix;
 
+    // Filter messages to avoid sending massive JSON blocks back to AI
+    const cleanedHistory = messages.map((m) => {
+      if (m.role === "assistant") {
+        // Replace large JSON blocks or Mermaid code with a placeholder
+        let content = m.content;
+        if (content.includes("```json") || content.includes("```mermaid")) {
+          content = content.replace(/```json[\s\S]*?```/g, "[Diagram Data Generated]");
+          content = content.replace(/```mermaid[\s\S]*?```/g, "[Mermaid Code Generated]");
+        }
+        return { role: m.role as "assistant", content };
+      }
+      return { role: m.role as "user", content: m.content };
+    });
+
     const chatMessages = [
       { role: "system" as const, content: systemPrompt },
-      ...messages.map((m) => ({ role: m.role as "user" | "assistant", content: m.content })),
+      ...cleanedHistory,
       { role: "user" as const, content: text },
     ];
 
