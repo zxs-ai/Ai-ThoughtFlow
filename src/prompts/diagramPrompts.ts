@@ -23,9 +23,10 @@ export const diagramPrompts: Record<DiagramType, string> = {
 ${JSON_FORMAT_RULES}
 规则：
 - type 固定为 "mindmap"
-- 生成 3-6 个一级分支，每个分支 2-5 个子节点
+- 生成 3-6 个一级分支（level=1），**每个**一级分支必须有 2-4 个二级子节点（level=2）
+- 不允许某些分支有子节点而其他分支没有，必须**全部**一级分支都有子节点
 - 可以给重要节点添加 emoji 字段增加趣味性
-- 子节点的 parent 必须指向其所属的一级分支 id
+- 子节点的 parent 必须精确指向其所属的父节点 id
 
 示例：
 \`\`\`json
@@ -37,13 +38,17 @@ ${JSON_FORMAT_RULES}
     { "id": "b1", "label": "春天", "level": 1, "parent": "root", "emoji": "🌸" },
     { "id": "c1", "label": "万物复苏", "level": 2, "parent": "b1" },
     { "id": "c2", "label": "鸟语花香", "level": 2, "parent": "b1" },
+    { "id": "c3", "label": "百花齐放", "level": 2, "parent": "b1" },
     { "id": "b2", "label": "夏天", "level": 1, "parent": "root", "emoji": "☀️" },
-    { "id": "c3", "label": "烈日炎炎", "level": 2, "parent": "b2" },
-    { "id": "c4", "label": "游泳戏水", "level": 2, "parent": "b2" },
+    { "id": "c4", "label": "烈日炎炎", "level": 2, "parent": "b2" },
+    { "id": "c5", "label": "游泳戏水", "level": 2, "parent": "b2" },
+    { "id": "c6", "label": "暑假出游", "level": 2, "parent": "b2" },
     { "id": "b3", "label": "秋天", "level": 1, "parent": "root", "emoji": "🍂" },
-    { "id": "c5", "label": "硕果累累", "level": 2, "parent": "b3" },
+    { "id": "c7", "label": "硕果累累", "level": 2, "parent": "b3" },
+    { "id": "c8", "label": "层林尽染", "level": 2, "parent": "b3" },
     { "id": "b4", "label": "冬天", "level": 1, "parent": "root", "emoji": "❄️" },
-    { "id": "c6", "label": "白雪皑皑", "level": 2, "parent": "b4" }
+    { "id": "c9", "label": "白雪皑皑", "level": 2, "parent": "b4" },
+    { "id": "c10", "label": "围炉取暖", "level": 2, "parent": "b4" }
   ]
 }
 \`\`\``,

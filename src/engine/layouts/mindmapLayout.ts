@@ -1,14 +1,13 @@
 /**
- * 头脑图/放射状布局引擎 v2
+ * 头脑图/放射状布局引擎 v3
  *
- * 完全对标参考图风格：
- * - 中心：实心鲜艳大圆
- * - 分支线：超粗有机曲线（8px+），每支独立颜色
- * - 一级节点：实心椭圆，白色文字
- * - 二级节点：较小实心圆角矩形
- * - 整体放射状，间距宽裕
+ * 修复：支持多层级（level 0/1/2，以及3+的深层节点）
+ * - level 0: 中心节点
+ * - level 1: 一级分支（放射状椭圆）
+ * - level 2: 二级叶子（圆角矩形）
+ * - level 3+: 更深层叶子（小圆角矩形，追加在 level 2 之后）
  */
-import type { DiagramData } from "../types";
+import type { DiagramData, DiagramNode } from "../types";
 import { getBranchColor, getSolidBubbleColor, CENTER_COLORS } from "../colorPalettes";
 import {
   createEllipse,
@@ -17,29 +16,42 @@ import {
   createText,
 } from "../helpers/excalidrawFactory";
 
-// ── 布局常量 v2 ──────────────────────────────────────────────
+// ── 布局常量 ──────────────────────────────────────────────────
 const CENTER_RX = 90;
 const CENTER_RY = 65;
-const BRANCH_RADIUS = 340;     // 一级节点到中心距离（更宽裕）
+const BRANCH_RADIUS = 340;     // 一级节点到中心距离
 const LEAF_RADIUS = 190;       // 二级节点到一级距离
 const L1_W = 160;
 const L1_H = 65;
 const L2_W = 140;
 const L2_H = 48;
+const L3_W = 120;
+const L3_H = 40;
+const LEAF_RADIUS_3 = 170;     // 三级节点到二级距离
 const MIN_LEAF_ANGLE = 0.42;
+
+// ── 辅助：根据父节点 id 获取直接子节点 ───────────────────────
+function childrenOf(nodes: DiagramNode[], parentId: string): DiagramNode[] {
+  return nodes.filter((n) => n.parent === parentId);
+}
 
 // ── 主入口 ──────────────────────────────────────────────────
 export function layoutMindmap(data: DiagramData): any[] {
   const elements: any[] = [];
+  const allNodes = data.nodes;
 
-  const root = data.nodes.find((n) => n.level === 0);
+  const root = allNodes.find((n) => n.level === 0);
   if (!root) return elements;
 
-  const branches = data.nodes.filter((n) => n.level === 1);
-  const leaves = data.nodes.filter((n) => n.level === 2);
+  // 容错：如果 AI 没给 level，用 parent 关系推断
+  // 找一级分支（直接 parent = root.id 的节点，或者 level=1 的节点）
+  const branches = allNodes.filter(
+    (n) => n.level === 1 || (n.parent === root.id && n.level !== 0)
+  );
+
   const cx = 0, cy = 0;
 
-  // ── 1. 中心节点（实心椭圆）──────────────────────────────
+  // ── 1. 中心节点 ────────────────────────────────────────
   elements.push(
     createEllipse({
       x: cx - CENTER_RX,
@@ -77,8 +89,7 @@ export function layoutMindmap(data: DiagramData): any[] {
     const bx = cx + Math.cos(angle) * BRANCH_RADIUS;
     const by = cy + Math.sin(angle) * BRANCH_RADIUS;
 
-    // ── 2a. 粗曲线分支（3控制点贝塞尔，9px）──────────────
-    // 中间控制点：向法线方向偏移，产生有机弯曲感
+    // ── 2a. 粗曲线分支（9px）─────────────────────────────
     const midDist = BRANCH_RADIUS * 0.5;
     const midX = cx + Math.cos(angle) * midDist;
     const midY = cy + Math.sin(angle) * midDist;
@@ -123,23 +134,24 @@ export function layoutMindmap(data: DiagramData): any[] {
       })
     );
 
-    // ── 2c. 二级子节点 ─────────────────────────────────
-    const branchLeaves = leaves.filter((l) => l.parent === branch.id);
-    if (branchLeaves.length === 0) return;
+    // ── 2c. 二级子节点 ────────────────────────────────────
+    // 支持用 parent=branch.id 或 level=2 找到叶子
+    const level2Leaves = childrenOf(allNodes, branch.id);
+    if (level2Leaves.length === 0) return;
 
     const leafSpread = Math.min(
       Math.PI * 0.65,
-      branchLeaves.length * MIN_LEAF_ANGLE
+      level2Leaves.length * MIN_LEAF_ANGLE
     );
     const leafStart = angle - leafSpread / 2;
-    const leafStep = branchLeaves.length > 1 ? leafSpread / (branchLeaves.length - 1) : 0;
+    const leafStep = level2Leaves.length > 1 ? leafSpread / (level2Leaves.length - 1) : 0;
 
-    branchLeaves.forEach((leaf, j) => {
-      const lAngle = branchLeaves.length === 1 ? angle : leafStart + j * leafStep;
+    level2Leaves.forEach((leaf, j) => {
+      const lAngle = level2Leaves.length === 1 ? angle : leafStart + j * leafStep;
       const lx = bx + Math.cos(lAngle) * LEAF_RADIUS;
       const ly = by + Math.sin(lAngle) * LEAF_RADIUS;
 
-      // 细曲线连接
+      // 连线
       elements.push(
         createLine({
           points: [
@@ -151,7 +163,7 @@ export function layoutMindmap(data: DiagramData): any[] {
         })
       );
 
-      // 二级节点（圆角矩形，颜色稍淡）
+      // 二级节点（圆角矩形）
       elements.push(
         createRoundedRect({
           x: lx - L2_W / 2,
@@ -174,6 +186,53 @@ export function layoutMindmap(data: DiagramData): any[] {
           textAlign: "center",
         })
       );
+
+      // ── 2d. 三级子节点（level 3+）──────────────────────
+      const level3Leaves = childrenOf(allNodes, leaf.id);
+      if (level3Leaves.length === 0) return;
+
+      const l3Spread = Math.min(Math.PI * 0.4, level3Leaves.length * 0.35);
+      const l3Start = lAngle - l3Spread / 2;
+      const l3Step = level3Leaves.length > 1 ? l3Spread / (level3Leaves.length - 1) : 0;
+
+      level3Leaves.forEach((l3node, k) => {
+        const l3Angle = level3Leaves.length === 1 ? lAngle : l3Start + k * l3Step;
+        const l3x = lx + Math.cos(l3Angle) * LEAF_RADIUS_3;
+        const l3y = ly + Math.sin(l3Angle) * LEAF_RADIUS_3;
+
+        elements.push(
+          createLine({
+            points: [
+              [lx + Math.cos(l3Angle) * L2_W * 0.5, ly + Math.sin(l3Angle) * L2_H * 0.5],
+              [l3x - Math.cos(l3Angle) * L3_W * 0.5, l3y - Math.sin(l3Angle) * L3_H * 0.5],
+            ],
+            strokeColor: color,
+            strokeWidth: 3,
+          })
+        );
+        elements.push(
+          createRoundedRect({
+            x: l3x - L3_W / 2,
+            y: l3y - L3_H / 2,
+            width: L3_W,
+            height: L3_H,
+            strokeColor: color,
+            fillColor: "#ffffff",
+            strokeWidth: 2,
+          })
+        );
+        elements.push(
+          createText({
+            x: l3x - L3_W / 2,
+            y: l3y - 10,
+            text: l3node.label,
+            fontSize: 12,
+            color: color,
+            width: L3_W,
+            textAlign: "center",
+          })
+        );
+      });
     });
   });
 

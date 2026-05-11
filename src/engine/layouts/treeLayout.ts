@@ -4,9 +4,13 @@
  * 参考图：棕色树干 + 绿色轮廓云朵叶（无填充或浅填充），
  * 整体轮廓感强，不同于气泡图的实心风格
  */
-import type { DiagramData } from "../types";
+import type { DiagramData, DiagramNode } from "../types";
 import { getBranchColor, getSolidBubbleColor } from "../colorPalettes";
 import { createEllipse, createRoundedRect, createLine, createText } from "../helpers/excalidrawFactory";
+
+function childrenOf(nodes: DiagramNode[], parentId: string): DiagramNode[] {
+  return nodes.filter((n) => n.parent === parentId);
+}
 
 const TRUNK_COLOR = "#795548";
 const ROOT_W = 170;
@@ -21,8 +25,7 @@ export function layoutTree(data: DiagramData): any[] {
   const root = data.nodes.find((n) => n.level === 0);
   if (!root) return elements;
 
-  const branches = data.nodes.filter((n) => n.level === 1);
-  const leaves = data.nodes.filter((n) => n.level === 2);
+  const branches = childrenOf(data.nodes, root.id);
 
   const rootX = 0, rootY = 320;
 
@@ -80,7 +83,7 @@ export function layoutTree(data: DiagramData): any[] {
     );
 
     // 叶子节点
-    const branchLeaves = leaves.filter((l) => l.parent === branch.id);
+    const branchLeaves = childrenOf(data.nodes, branch.id);
     if (branchLeaves.length === 0) return;
 
     const leafSpread = Math.max(branchLeaves.length * 148, 200);
