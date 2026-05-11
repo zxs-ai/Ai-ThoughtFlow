@@ -75,3 +75,14 @@ echo "   DMG: $DMG_DEST_NAME"
 echo "   APP: $APP_DEST_NAME"
 echo "══════════════════════════════════════════════"
 
+# 3. 同步到 GitHub（镜像），触发 Windows/macOS CI 构建
+echo ""
+echo "🔄 同步代码到 GitHub（触发 Windows 版构建）..."
+cd "$PROJECT_ROOT"
+if git push thoughtflow main --quiet 2>/dev/null; then
+    echo "✅ GitHub 同步成功 → https://github.com/zxs-ai/Ai-ThoughtFlow"
+    echo "   Windows 版 .exe 将在 Actions 完成后出现在 Releases 页面"
+else
+    echo "⚠️  GitHub 同步失败（不影响本地 macOS 包，可手动执行 git push thoughtflow main）"
+fi
+
