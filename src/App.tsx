@@ -9,6 +9,9 @@ import { SettingsModal } from "./components/Settings/SettingsModal";
 import { LibraryBrowserPanel } from "./components/Canvas/LibraryBrowserPanel";
 import type { LibraryItems } from "@excalidraw/excalidraw/types";
 import { saveLibraryItems } from "./components/Canvas/libraryStorage";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+
+const appWindow = getCurrentWindow();
 
 const App: React.FC = () => {
   const {
@@ -47,6 +50,16 @@ const App: React.FC = () => {
           e.preventDefault();
           const { settingsOpen, setSettingsOpen } = useAppStore.getState();
           setSettingsOpen(!settingsOpen);
+        } else if (e.key.toLowerCase() === "m") {
+          e.preventDefault();
+          if (e.shiftKey) {
+            appWindow.toggleMaximize();
+          } else {
+            appWindow.minimize();
+          }
+        } else if (e.key.toLowerCase() === "w") {
+          e.preventDefault();
+          appWindow.close();
         }
       }
     };
