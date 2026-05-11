@@ -9,15 +9,8 @@ export const TitleBar: React.FC = () => {
   const { setSettingsOpen, sidebarOpen, setSidebarOpen } = useAppStore();
   const { t } = useTranslation();
   const [isMaximized, setIsMaximized] = useState(false);
-  const [platform, setPlatform] = useState<string>("");
 
   useEffect(() => {
-    // Detect platform
-    const ua = navigator.userAgent.toLowerCase();
-    if (ua.includes("win")) setPlatform("windows");
-    else if (ua.includes("mac")) setPlatform("macos");
-    else setPlatform("linux");
-
     // Listen for maximize events
     const unlisten = appWindow.onResized(async () => {
       const maximized = await appWindow.isMaximized();
