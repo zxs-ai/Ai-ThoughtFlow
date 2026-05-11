@@ -23,10 +23,18 @@ dist-ssr
 *.sln
 *.sw?
 
-# AI workflow dev documents (private, do not publish)
+# AI workflow & engineering meta documents (private, do not publish)
+# Principle: only track files necessary for the project to build and run
 SESSION_BRIEF*.md
 PROJECT_CHARTER*.md
 COGNITIVE_GAPS*.md
+*_prd.md
+*_PRD.md
+PRD_*.md
+REQUIREMENT_TRACE*.md
+DISPATCH*.md
+DIRECTION*.md
 docs/dev/
 logs/
+.learning/
 .gemini/
