@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ai ThoughtFlow Pro</title>
     <style>
-      html, body { background: transparent; margin: 0; padding: 0; }
+      /* 默认使用纯色背景（Windows 需要不透明背景才能正常接收点击事件）
+         macOS 会在 JS 初始化后改为 transparent 以支持圆角窗口效果 */
+      html, body { background: #0a0a0f; margin: 0; padding: 0; }
+      html.macos-transparent, html.macos-transparent body { background: transparent; }
     </style>
+    <script>
+      // 仅在 macOS 上启用透明背景（Windows WebView2 透明会导致点击穿透）
+      if (navigator.userAgent.includes('Mac')) {
+        document.documentElement.classList.add('macos-transparent');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

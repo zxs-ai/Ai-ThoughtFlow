@@ -40,9 +40,10 @@ export const TitleBar: React.FC = () => {
   return (
     <div
       className="title-bar"
-      data-tauri-drag-region
     >
-      <div className="title-bar-left" data-tauri-drag-region>
+      {/* ── 拖拽区域只放在没有按钮的元素上。
+           Windows WebView2 的 data-tauri-drag-region 会吞掉所有子元素点击事件。 ── */}
+      <div className="title-bar-left">
         <button
           className="title-bar-toggle"
           onClick={() => setSidebarOpen(!sidebarOpen)}
