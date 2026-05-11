@@ -13,7 +13,6 @@ export const TitleBar: React.FC = () => {
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
-    // Listen for maximize events
     const unlisten = appWindow.onResized(async () => {
       const maximized = await appWindow.isMaximized();
       setIsMaximized(maximized);
@@ -24,20 +23,32 @@ export const TitleBar: React.FC = () => {
     };
   }, []);
 
-  const handleMinimize = () => appWindow.minimize();
-  const handleMaximize = async () => {
-    await appWindow.toggleMaximize();
-    const maximized = await appWindow.isMaximized();
-    setIsMaximized(maximized);
+  const handleMinimize = async () => {
+    try {
+      await appWindow.minimize();
+    } catch (e) {
+      console.error("minimize failed:", e);
+    }
   };
-  const handleClose = () => appWindow.close();
+  const handleMaximize = async () => {
+    try {
+      await appWindow.toggleMaximize();
+      const maximized = await appWindow.isMaximized();
+      setIsMaximized(maximized);
+    } catch (e) {
+      console.error("toggleMaximize failed:", e);
+    }
+  };
+  const handleClose = async () => {
+    try {
+      await appWindow.close();
+    } catch (e) {
+      console.error("close failed:", e);
+    }
+  };
 
   return (
-    <div
-      className="title-bar"
-    >
-      {/* ── 拖拽区域只放在没有按钮的元素上。
-           Windows WebView2 的 data-tauri-drag-region 会吞掉所有子元素点击事件。 ── */}
+    <div className="title-bar">
       <div className="title-bar-left">
         <button
           className="title-bar-toggle"
@@ -60,20 +71,19 @@ export const TitleBar: React.FC = () => {
           ⚙️
         </button>
 
-        {/* ── 窗口控件：所有平台都需要（decorations: false 隐藏了原生按钮） ── */}
         <div className="window-controls">
-          <button className="window-control-btn" onClick={handleMinimize} title={`Minimize (${modKey}+M)`}>
-            <svg width="12" height="12" viewBox="0 0 12 12"><rect fill="currentColor" x="1" y="5.5" width="10" height="1"/></svg>
+          <button className="window-control-btn minimize" onClick={handleMinimize} title={`Minimize (${modKey}+M)`}>
+            <svg width="14" height="14" viewBox="0 0 12 12"><rect fill="currentColor" x="1" y="5.5" width="10" height="1"/></svg>
           </button>
-          <button className="window-control-btn" onClick={handleMaximize} title={`${isMaximized ? "Restore" : "Maximize"} (${modKey}+Shift+M)`}>
+          <button className="window-control-btn maximize" onClick={handleMaximize} title={`${isMaximized ? "Restore" : "Maximize"} (${modKey}+Shift+M)`}>
             {isMaximized ? (
-              <svg width="12" height="12" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" d="M3.5,3.5 L3.5,8.5 L8.5,8.5 L8.5,3.5 L3.5,3.5 Z M5.5,3.5 L5.5,1.5 L10.5,1.5 L10.5,6.5 L8.5,6.5" /></svg>
+              <svg width="14" height="14" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" d="M3.5,3.5 L3.5,8.5 L8.5,8.5 L8.5,3.5 L3.5,3.5 Z M5.5,3.5 L5.5,1.5 L10.5,1.5 L10.5,6.5 L8.5,6.5" /></svg>
             ) : (
-              <svg width="12" height="12" viewBox="0 0 12 12"><rect fill="none" stroke="currentColor" x="2.5" y="2.5" width="7" height="7"/></svg>
+              <svg width="14" height="14" viewBox="0 0 12 12"><rect fill="none" stroke="currentColor" x="2.5" y="2.5" width="7" height="7"/></svg>
             )}
           </button>
           <button className="window-control-btn close" onClick={handleClose} title={`Close (${modKey}+W)`}>
-            <svg width="12" height="12" viewBox="0 0 12 12"><path fill="currentColor" d="M10.5,2.1 L9.9,1.5 L6,5.4 L2.1,1.5 L1.5,2.1 L5.4,6 L1.5,9.9 L2.1,10.5 L6,6.6 L9.9,10.5 L10.5,9.9 L6.6,6 Z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 12 12"><path fill="currentColor" d="M10.5,2.1 L9.9,1.5 L6,5.4 L2.1,1.5 L1.5,2.1 L5.4,6 L1.5,9.9 L2.1,10.5 L6,6.6 L9.9,10.5 L10.5,9.9 L6.6,6 Z"/></svg>
           </button>
         </div>
       </div>
@@ -155,22 +165,25 @@ export const TitleBar: React.FC = () => {
           display: flex;
           align-items: center;
           height: 100%;
-          margin-right: -16px; /* Offset title-bar padding */
+          margin-right: -16px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 8px;
+          padding: 0 4px;
         }
         .window-control-btn {
-          width: 46px;
+          width: 52px;
           height: 44px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: transparent;
           border: none;
-          color: rgba(255, 255, 255, 0.6);
+          color: rgba(255, 255, 255, 0.85);
           cursor: pointer;
           transition: background 0.2s, color 0.2s;
         }
         .window-control-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.12);
           color: white;
         }
         .window-control-btn.close:hover {
