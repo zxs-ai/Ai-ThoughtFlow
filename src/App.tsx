@@ -27,13 +27,12 @@ const App: React.FC = () => {
     });
   }, [setModelConfig]);
 
-  // Save config when it changes
+  // Save config whenever it changes (debounced 300ms)
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (modelConfig.apiKey) {
-        saveConfig(modelConfig).catch(() => {});
-      }
-    }, 1000);
+      // 无论 apiKey 是否为空都存储（用户清空也需要持久化）
+      saveConfig(modelConfig).catch(() => {});
+    }, 300);
     return () => clearTimeout(timer);
   }, [modelConfig]);
 
