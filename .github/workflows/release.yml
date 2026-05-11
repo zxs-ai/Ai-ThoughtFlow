@@ -158,9 +158,10 @@ jobs:
             - 9 种卡通教育风格图表类型
             - 末端节点自动防重叠排版
           files: |
-            artifacts/macos-universal/*
-            artifacts/windows-x64/*
-          fail_on_unmatched_files: false
+            artifacts/**/*.dmg
+            artifacts/**/*.zip
+            artifacts/**/*.exe
+            artifacts/**/*.msi
           draft: false
           generate_release_notes: false
         env:
