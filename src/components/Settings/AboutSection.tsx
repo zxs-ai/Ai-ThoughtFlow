@@ -11,6 +11,7 @@ export const AboutSection: React.FC = () => {
         <h2>Ai ThoughtFlow Pro v1.0.0</h2>
         <p>{t.settings.mitLicense}</p>
         <p>{t.settings.developer}: applexyz</p>
+        <p>邮箱: <a href="mailto:p_z@me.com" style={{ color: "var(--accent)" }}>p_z@me.com</a></p>
         <div className="about-deps">
           <p>{t.settings.basedOn}</p>
           <ul>
